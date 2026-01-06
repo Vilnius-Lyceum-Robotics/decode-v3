@@ -73,7 +73,7 @@ public class CommandRunner implements Runnable {
 
             //GlobalLoopTimeMonitor.setCommandLoopDurationNs(System.nanoTime() - startTime);
             //GlobalLoopTimeMonitor.logLoopTimes(telemetry);
-            telemetry.update();
+            //telemetry.update();
         }
     }
 }

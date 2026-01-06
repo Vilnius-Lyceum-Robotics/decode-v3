@@ -30,7 +30,7 @@ public abstract class VLRLinearOpMode extends LinearOpMode {
     public void runOpMode() {
         VLRSubsystem.clearSubsystems(); // Clear all subsystems
         executorService = Executors.newCachedThreadPool();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         commandRunner = new CommandRunner(this::opModeIsActive, hardwareMap, telemetry);
         executorService.submit(commandRunner);
