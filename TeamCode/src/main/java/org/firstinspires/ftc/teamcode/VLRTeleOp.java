@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
 
 /**
  * @noinspection unchecked
@@ -22,11 +23,9 @@ public class VLRTeleOp extends VLRLinearOpMode {
     PrimaryDriverTeleOpControls primaryDriver;
     SecondaryDriverTeleOpControls secondaryDriver;
 
-    LoopTimeMonitor loopTimeMonitor = new LoopTimeMonitor();
-
     @Override
     public void run() {
-        VLRSubsystem.requireSubsystems(Chassis.class, Intake.class, Shooter.class);
+        VLRSubsystem.requireSubsystems(Chassis.class, Intake.class, Shooter.class, Transfer.class);
         VLRSubsystem.initializeAll(hardwareMap);
 
         primaryDriver = new PrimaryDriverTeleOpControls(gamepad1);
@@ -39,8 +38,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
             VLRSubsystem.getInstance(Shooter.class).telemetry(telemetry);
             telemetry.update();
             primaryDriver.update();
-            loopTimeMonitor.loopEnd();
-            sleep(5);
+            sleep(20);
         }
     }
 }
