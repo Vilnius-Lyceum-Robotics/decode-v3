@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems.chassis;
 
+import static org.firstinspires.ftc.teamcode.subsystems.chassis.ChassisConfiguration.*;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
@@ -12,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AsymmetricLowPa
 import org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.MecanumDriveController;
 
 @Config
-public class Chassis extends VLRSubsystem<Chassis> implements ChassisConfiguration {
+public class Chassis extends VLRSubsystem<Chassis> {
     MotorEx MotorLeftFront;
     MotorEx MotorRightFront;
     MotorEx MotorLeftBack;
@@ -28,19 +30,16 @@ public class Chassis extends VLRSubsystem<Chassis> implements ChassisConfigurati
 
     public static double staticFrictionBar = 0.05;
 
-    boolean isDriveFieldCentric = false;
-
     AsymmetricLowPassFilter x_filter = new AsymmetricLowPassFilter(acceleration_a, deceleration_a);
     AsymmetricLowPassFilter y_filter = new AsymmetricLowPassFilter(acceleration_a, deceleration_a);
 
+    PIDController headingPid = new PIDController(HEADING_AUTOAIM_P, HEADING_AUTOAIM_I, HEADING_AUTOAIM_D);
 
-    GoBildaPinpointDriver pinpoint;
+    boolean autoAimEnabled = false;
+    double currentHeading, targetHeading = 0;
 
     @Override
     protected void initialize(HardwareMap hardwareMap) {
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
-        pinpoint.resetPosAndIMU();
-
         MotorLeftFront = new MotorEx(hardwareMap, MOTOR_LEFT_FRONT);
         MotorRightFront = new MotorEx(hardwareMap, MOTOR_RIGHT_FRONT);
         MotorLeftBack = new MotorEx(hardwareMap, MOTOR_LEFT_REAR);
@@ -60,33 +59,23 @@ public class Chassis extends VLRSubsystem<Chassis> implements ChassisConfigurati
         MotorRightFront.setInverted(true);
     }
 
-
-
-    public void enableRobotCentric(){
-        isDriveFieldCentric = false;
+    public void toggleAutoAim() {
+        autoAimEnabled = !autoAimEnabled;
     }
 
-
-    public void enableFieldCentric(){
-        isDriveFieldCentric = true;
+    public void setHeadingInputs(double currentHeading, double targetHeading) {
+        this.currentHeading = currentHeading;
+        this.targetHeading = targetHeading;
+        headingPid.setPID(HEADING_AUTOAIM_P, HEADING_AUTOAIM_I, HEADING_AUTOAIM_D);
     }
-
-//    public void drive(Pose2d positionVector) {
-//        localizer.update();
-//        this.driveMotors(new MecanumDriveController(
-//                strafeMultiplier * x_filter.estimatePower(positionVector.getX()),
-//                forwardsMultiplier * y_filter.estimatePower(positionVector.getY()),
-//                (positionVector.getHeading()) * 0.05
-//        ));
-//    }
 
     public void drive(double xSpeed, double ySpeed, double zRotation) {
         // This sometimes fails and causes the whole robot to die
-        if (isDriveFieldCentric) pinpoint.update();
         Vector2d vector = new Vector2d(x_filter.estimatePower(xSpeed) * forwardsMultiplier, y_filter.estimatePower(ySpeed) * strafeMultiplier);
 
-//        if (isDriveFieldCentric) vector = vector.rotateBy(-Math.toDegrees(pinpoint.getHeading()));
-        this.driveMotors(new MecanumDriveController(vector.getX(), vector.getY(), zRotation));
+        double heading = autoAimEnabled ? headingPid.calculate(currentHeading, targetHeading) : zRotation * 0.3;
+
+        this.driveMotors(new MecanumDriveController(vector.getX(), vector.getY(), heading));
     }
 
     private void driveMotors(MecanumDriveController driveController) {
