@@ -8,16 +8,12 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.helpers.controls.DriverControls;
 import org.firstinspires.ftc.teamcode.helpers.controls.button.ButtonCtl;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.claw.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.claw.commands.ToggleClawAngle;
-import org.firstinspires.ftc.teamcode.subsystems.claw.commands.ToggleClawState;
 
 /**
  * Abstraction for secondary driver controls. All controls will be defined here.
  * For this to work well, all subsystems will be defined as singletons.
  */
 public class SecondaryDriverTeleOpControls extends DriverControls {
-    ClawSubsystem claw;
 //    ArmSlideSubsystem slide;
 
     long lastInterval = System.nanoTime();
@@ -27,7 +23,6 @@ public class SecondaryDriverTeleOpControls extends DriverControls {
 
         CommandScheduler cs = CommandScheduler.getInstance();
 
-        claw = VLRSubsystem.getInstance(ClawSubsystem.class);
 //        slide = VLRSubsystem.getInstance(ArmSlideSubsystem.class);
 
 //        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean a) -> cs.schedule(new IntakeSample())));
@@ -35,8 +30,6 @@ public class SecondaryDriverTeleOpControls extends DriverControls {
 //        add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ScoreSample(107))));
 //        add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.SIMPLE, false, ArmOverrideState::set));
 
-        add(new ButtonCtl(GamepadKeys.Button.DPAD_DOWN, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean d) -> cs.schedule(new ToggleClawState())));
-        add(new ButtonCtl(GamepadKeys.Button.DPAD_LEFT, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean e) -> cs.schedule(new ToggleClawAngle())));
 
 //        add(new ButtonCtl(GamepadKeys.Button.LEFT_STICK_BUTTON, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean f) -> cs.schedule(new ResetRotatorMotor())));
 //
@@ -49,8 +42,6 @@ public class SecondaryDriverTeleOpControls extends DriverControls {
     }
 
     private void incrementClaw(double input) {
-        if (VLRSubsystem.getInstance(ClawSubsystem.class) != null)
-            VLRSubsystem.getInstance(ClawSubsystem.class).setHorizontalRotation(input);
     }
 
 //    private void incrementSlidePosition(double input) {
