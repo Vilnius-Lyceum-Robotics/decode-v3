@@ -6,6 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 public interface IntakeConfiguration {
     String INTAKE_MOTOR = "intake";
     String TRANSFER_MOTOR = "transfer";
-    double INTAKE_SPEED = 0.4;
+    double INTAKE_SPEED = 0.6;
     double TRANSFER_SPEED = 1;
 }

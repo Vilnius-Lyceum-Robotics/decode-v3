@@ -9,6 +9,9 @@ import org.firstinspires.ftc.teamcode.helpers.controls.button.ButtonCtl;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.ShootPreset;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetShooterState;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
 /**
  * Abstraction for primary driver controls. All controls will be defined here.
@@ -35,8 +38,10 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
 
 
         add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleIntake())));
-//        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetHangPosition(HangConfiguration.TargetPosition.DOWN))));
-//        add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> ArmLowState.toggle()));
+        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.FAR))));
+        add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
+        add(new ButtonCtl(SQUARE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleTransfer())));
+
 //
 //        addVibration(ArmLowState::wasJustToggled);
     }
