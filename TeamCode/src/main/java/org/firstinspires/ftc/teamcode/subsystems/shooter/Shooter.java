@@ -39,31 +39,33 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
 
         hood.setPosition(0.1);
         hoodPos = 0.1;
+        shooterLeft.setInverted(true);
 
         lift.setPosition(LIFT_DOWN_POS);
     }
+//    public void setShooter(int index)
+//    {
+//        shooterLeft.setVelocity(presets[index].rpm*multiplierRPM);
+//        shooterRight.setVelocity(-presets[index].rpm*multiplierRPM);
+//        hoodPos = presets[index].hoodPos;
+//        hood.setPosition(hoodPos);
+//    }
 
-    private static class Preset{
-        final protected double rpm, hoodPos;
-        protected Preset(double rpm, double hoodPos){
-            this.rpm = rpm;
-            this.hoodPos = hoodPos;
-        }
+    public void setShooter(double rpm) {
+        shooterRight.setVelocity(rpm);
+        shooterLeft.setVelocity(rpm);
     }
-    private final Preset[] presets = new Preset[]{
-            new Preset(2000, 0.25),
-            new Preset(1700, 0.21),
-            new Preset(1500, 0.18),
-            new Preset(800, 0),
-    };
-    public void shooterPreset(int index)
-    {
-        shooterLeft.setVelocity(presets[index].rpm*multiplierRPM);
-        shooterRight.setVelocity(-presets[index].rpm*multiplierRPM);
-        hoodPos = presets[index].hoodPos;
-        hood.setPosition(hoodPos);
+    public void setShooterState(ShootPreset preset) {
+        setShooter(preset.rpm);
+        setHood(preset.hoodPos);
     }
 
+    public void setHood(double pos) {
+        hood.setPosition(pos);
+    }
+    public double getCurrentRPM() {
+        return shooterRight.getVelocity();
+    }
     //TESTING
     public void hoodUp() {
         hoodPos = Range.clip(hoodPos + HOOD_STEP, 0, 1);

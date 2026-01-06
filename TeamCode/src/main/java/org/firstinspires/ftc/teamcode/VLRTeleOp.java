@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.helpers.opmode.VLRLinearOpMode;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 /**
  * @noinspection unchecked
@@ -25,7 +26,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
     @Override
     public void run() {
-        VLRSubsystem.requireSubsystems(Chassis.class, Intake.class);
+        VLRSubsystem.requireSubsystems(Chassis.class, Intake.class, Shooter.class);
         VLRSubsystem.initializeAll(hardwareMap);
 
         primaryDriver = new PrimaryDriverTeleOpControls(gamepad1);
@@ -35,14 +36,11 @@ public class VLRTeleOp extends VLRLinearOpMode {
 //        secondaryDriver = new SecondaryDriverTeleOpControls(gamepad2);
 
         while (opModeIsActive()) {
-            loopTimeMonitor.loopStart();
-
+            VLRSubsystem.getInstance(Shooter.class).telemetry(telemetry);
+            telemetry.update();
             primaryDriver.update();
-//            secondaryDriver.update();
-
             loopTimeMonitor.loopEnd();
-//            double cycleTime = loopTimeMonitor.getAverageTime(5, LoopTimeMonitor.ElementSelectionType.TOP_PERCENTILE_ELEMENTS) / 1000;
-//            System.out.println("MAIN THREAD CYCLE TIME: " + 1.0 / cycleTime);
+            sleep(5);
         }
     }
 }
