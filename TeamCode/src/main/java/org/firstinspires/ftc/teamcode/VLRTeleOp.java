@@ -38,7 +38,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
         startingPose = PoseSaver.getPedroPose();
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
+        follower.setStartingPose(startingPose == null ? new Pose(65, 9, Math.toRadians(90)) : startingPose);
         follower.updatePose();
 
         primaryDriver = new PrimaryDriverTeleOpControls(gamepad1);
@@ -54,6 +54,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
             telemetry.addData("Heading: ", follower.getHeading());
             telemetry.update();
             VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
+            telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeading(follower));
             primaryDriver.update();
             sleep(20);
         }

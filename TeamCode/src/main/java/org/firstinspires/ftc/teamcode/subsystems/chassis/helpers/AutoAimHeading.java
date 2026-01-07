@@ -2,26 +2,26 @@ package org.firstinspires.ftc.teamcode.subsystems.chassis.helpers;
 
 import static org.firstinspires.ftc.teamcode.helpers.enums.Alliance.*;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.helpers.enums.Alliance;
 import org.firstinspires.ftc.teamcode.helpers.persistence.AllianceSaver;
 
+@Config
 public class AutoAimHeading {
 
     private final static Alliance alliance = AllianceSaver.getAlliance();
-    private static Pose goalPose;
-    private static double xLength, yLength, targetHeading;
+
     public static double getTargetHeading(Follower follower) {
 
-        if (alliance == RED) goalPose = new Pose(10, 130);
-        else goalPose = new Pose(206, 130);
+        Pose goalPose;
+        if (alliance == RED) goalPose = new Pose(144 - 9, 133);
+        else goalPose = new Pose(9, 133);
 
-        xLength = goalPose.getX() - follower.getPose().getX();
-        yLength = goalPose.getY() - follower.getPose().getY();
-        targetHeading = Math.atan2(yLength, xLength);
+        double xLength = goalPose.getX() - follower.getPose().getX();
+        double yLength = goalPose.getY() - follower.getPose().getY();
 
-        return targetHeading;
-    }
-}
+        return Math.atan2(yLength, xLength);
+}}
