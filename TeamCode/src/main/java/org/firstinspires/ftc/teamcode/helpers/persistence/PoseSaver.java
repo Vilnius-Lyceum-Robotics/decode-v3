@@ -5,7 +5,7 @@ import com.pedropathing.geometry.Pose;
 import java.util.logging.Logger;
 
 public final class PoseSaver {
-    static volatile Pose pedroPose = new Pose(0, 0, 0);
+    static volatile Pose pedroPose = new Pose(65, 9, Math.toRadians(90));
     static boolean poseSaved = false;
 
     public static void setPedroPose(Pose pose) {

@@ -6,14 +6,19 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controls.PrimaryDriverTeleOpControls;
+import org.firstinspires.ftc.teamcode.helpers.enums.Alliance;
 import org.firstinspires.ftc.teamcode.helpers.opmode.VLRLinearOpMode;
+import org.firstinspires.ftc.teamcode.helpers.persistence.AllianceSaver;
 import org.firstinspires.ftc.teamcode.helpers.persistence.PoseSaver;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
+import org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
+
+import java.util.Objects;
 
 /**
  * @noinspection unchecked
@@ -39,20 +44,16 @@ public class VLRTeleOp extends VLRLinearOpMode {
         primaryDriver = new PrimaryDriverTeleOpControls(gamepad1);
 
         waitForStart();
+
         while (opModeIsActive()) {
             follower.updatePose();
+            telemetry.addData("Alliance: ", Objects.requireNonNull(AllianceSaver.getAlliance()).name);
             VLRSubsystem.getInstance(Shooter.class).telemetry(telemetry);
             telemetry.addData("x: ", follower.getPose().getX());
             telemetry.addData("y: ", follower.getPose().getY());
             telemetry.addData("Heading: ", follower.getHeading());
             telemetry.update();
-            // x 10 y 120
-            double yLength = 120 - follower.getPose().getY();
-            double xLength = 10 - follower.getPose().getX();
-            telemetry.addData("yLen", yLength);
-            telemetry.addData("xLen", xLength);
-            telemetry.addData("atan2", Math.atan2(yLength, xLength));
-            VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), Math.atan2(yLength, xLength));
+            VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
             primaryDriver.update();
             sleep(20);
         }

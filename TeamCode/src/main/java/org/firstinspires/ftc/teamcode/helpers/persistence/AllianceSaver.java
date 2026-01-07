@@ -17,6 +17,6 @@ public class AllianceSaver {
     public static Alliance getAlliance() {
         if (allianceSaved) return alliance;
 
-        return null;
+        return Alliance.BLUE;
     }
 }
