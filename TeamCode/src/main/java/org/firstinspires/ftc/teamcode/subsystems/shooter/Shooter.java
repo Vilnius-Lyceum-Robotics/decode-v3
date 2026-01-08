@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import com.sun.tools.javac.code.Type;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
@@ -44,6 +45,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
         setLift(LIFT_DOWN_POS);
     }
     public void setShooter(double rpm) {
+        shooter_rpm = rpm;
         shooterRight.setVelocity(rpm);
         shooterLeft.setVelocity(rpm);
     }
@@ -53,7 +55,9 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
     }
 
     public void setHood(double pos) {
-        hood.setPosition(pos);
+        double clippedPos = Range.clip(pos, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
+        hood.setPosition(clippedPos);
+        hoodPos = clippedPos;
     }
     public double getCurrentRPM() {
         return shooterRight.getVelocity();
@@ -98,5 +102,8 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
 
     public double getLiftAngle(){
         return liftAngle;
+    }
+    public double getTargetRPM() {
+        return shooter_rpm;
     }
 }

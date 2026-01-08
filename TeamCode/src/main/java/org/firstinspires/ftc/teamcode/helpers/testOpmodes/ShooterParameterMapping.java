@@ -1,10 +1,16 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
+import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.LIFT_UP_POS;
+
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.follower.Follower;
@@ -20,18 +26,24 @@ import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetLift;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
 import java.util.function.BooleanSupplier;
 
-@TeleOp(name = "ShooterParameterMapping", group = "Auto")
+@TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 10;
     double distance = 120;
     Pose startPose = new Pose(24, 120, Math.toRadians(135));
     Pose goalPose = new Pose(9, 133);
     double[][] data = new double[numberOfPoints][3];
+    GamepadEx firstDriver;
+    Shooter shooter;
+    boolean prevStateRightBumper, prevStateLeftBumper, prevStateDpadUp, prevStateDpadDown, prevStateA = false;
 
     Follower f;
     Pose[] samplePoints;
@@ -98,16 +110,60 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
         VLRSubsystem.requireSubsystems(Chassis.class, Intake.class, Shooter.class, Transfer.class);
         VLRSubsystem.initializeAll(hardwareMap);
+        shooter = VLRSubsystem.getInstance(Shooter.class);
 
         f = Constants.createFollower(hardwareMap);
         f.setStartingPose(startPose);
 
+        firstDriver = new GamepadEx(gamepad1);
+        new SetLift(LIFT_UP_POS);
+
         waitForStart();
 
-        CommandScheduler.getInstance().schedule(AutoCommand(numberOfPoints, ()-> gamepad1.triangle));
+        CommandScheduler.getInstance().schedule(AutoCommand(numberOfPoints, ()-> firstDriver.getButton(GamepadKeys.Button.Y)));
 
         while (opModeIsActive()) {
             f.update();
+
+            if (gamepad1.left_bumper && !prevStateLeftBumper) {
+                shooter.setHood(shooter.getHoodPos() - 0.05);
+            }
+            if (gamepad1.right_bumper && !prevStateRightBumper) {
+                shooter.setHood(shooter.getHoodPos() + 0.05);
+            }
+            if (gamepad1.dpad_up && !prevStateDpadUp) {
+                shooter.setShooter(shooter.getTargetRPM() + 132);
+            }
+            if (gamepad1.dpad_down && !prevStateDpadDown) {
+                shooter.setShooter(shooter.getTargetRPM() - 132);
+            }
+            if (gamepad1.a && !prevStateA) {
+                CommandScheduler.getInstance().schedule(
+                        new SequentialCommandGroup(
+                                new ToggleIntake(),
+                                new ToggleTransfer()
+                        )
+                );
+            }
+
+            prevStateDpadUp = gamepad1.dpad_up;
+            prevStateRightBumper = gamepad1.right_bumper;
+            prevStateLeftBumper = gamepad1.left_bumper;
+            prevStateDpadDown = gamepad1.dpad_down;
+            prevStateA = gamepad1.a;
+
+            telemetry.addData("Target RPM: ", shooter.getTargetRPM());
+            telemetry.addData("Hood Angle: ", shooter.getHoodPos());
+            telemetry.update();
+        }
+
+        for (int i = 0; i < data.length; i++) {
+            System.out.println(
+                    "Data logger " + i + ": " +
+                            data[i][0] + ", " +
+                            data[i][1] + ", " +
+                            data[i][2]
+            );
         }
     }
 }
