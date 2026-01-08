@@ -62,6 +62,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
         lift.setPosition(angle);
         liftAngle = angle;
     }
+    public double getHoodPos(){return hoodPos;}
     //TESTING
     public void hoodUp() {
         hoodPos = Range.clip(hoodPos + HOOD_STEP, 0, 1);
