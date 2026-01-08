@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.outoftheboxrobotics.photoncore.Photon;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -34,11 +35,12 @@ import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfe
 
 import java.util.function.BooleanSupplier;
 
+@Photon
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 10;
     double distance = 120;
-    Pose startPose = new Pose(24, 120, Math.toRadians(135));
+    Pose startPose = new Pose(20.4296, 123.5672, Math.toRadians(135));
     Pose goalPose = new Pose(9, 133);
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
@@ -63,6 +65,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
         for (int i = 0; i < numberOfPoints; i++){
             samplePoints[i] = startPose.plus(offset.times(i));
+            System.out.println("LOGGER POINT: " + samplePoints[i]);
         }
     }
 
@@ -96,7 +99,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 new WaitUntilCommand(confirmation),
                 new ScheduleRuntimeCommand(()-> LogHoodAndShooterCommand(
                         VLRSubsystem.getInstance(Shooter.class).getHoodPos(),
-                        VLRSubsystem.getInstance(Shooter.class).getCurrentRPM(),
+                        VLRSubsystem.getInstance(Shooter.class).getTargetRPM(),
                         currentPointIndex)),
                 new WaitCommand(50),
                 new ScheduleRuntimeCommand(()-> FollowToNextPoint(currentPointIndex)),
@@ -116,7 +119,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
         f.setStartingPose(startPose);
 
         firstDriver = new GamepadEx(gamepad1);
-        new SetLift(LIFT_UP_POS);
+        CommandScheduler.getInstance().schedule(new SetLift(LIFT_UP_POS));
 
         waitForStart();
 
@@ -154,6 +157,8 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
             telemetry.addData("Hood Angle: ", shooter.getHoodPos());
+            telemetry.addData("follower x:", f.getPose().getX());
+            telemetry.addData("follower y:", f.getPose().getY());
             telemetry.update();
         }
 
