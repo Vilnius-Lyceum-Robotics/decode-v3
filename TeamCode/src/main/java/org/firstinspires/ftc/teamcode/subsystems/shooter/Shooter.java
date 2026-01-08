@@ -66,6 +66,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
     public double getCurrentRPM() {
         return shooterRight.getVelocity();
     }
+    public double getHoodPos(){return hoodPos;}
     //TESTING
     public void hoodUp() {
         hoodPos = Range.clip(hoodPos + HOOD_STEP, 0, 1);
