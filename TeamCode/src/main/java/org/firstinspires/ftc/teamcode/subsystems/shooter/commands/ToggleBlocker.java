@@ -7,12 +7,12 @@ import com.arcrobotics.ftclib.command.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
-public class ToggleLift extends ConditionalCommand {
-    public ToggleLift() {
+public class ToggleBlocker extends ConditionalCommand {
+    public ToggleBlocker() {
         super(
-                new SetLift(LIFT_DOWN_POS),
-                new SetLift(LIFT_UP_POS),
-                () -> VLRSubsystem.getInstance(Shooter.class).getLiftAngle() == LIFT_UP_POS
+                new SetBlocker(BLOCKER_CLOSED_POS),
+                new SetBlocker(BLOCKER_OPEN_POS),
+                () -> VLRSubsystem.getInstance(Shooter.class).getLiftAngle() == BLOCKER_OPEN_POS
         );
     }
 }
