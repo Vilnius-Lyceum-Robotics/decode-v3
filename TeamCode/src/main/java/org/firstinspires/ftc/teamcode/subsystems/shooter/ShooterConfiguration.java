@@ -9,9 +9,9 @@ public interface ShooterConfiguration {
     String BLOCKER_SERVO_NAME = "lift";
     String SHOOTER_HOOD = "hood";
     double BLOCKER_CLOSED_POS = 1;
-    double BLOCKER_OPEN_POS = 0;
-    double HOOD_MAX_ANGLE = 0.65;
-    double HOOD_MIN_ANGLE = 0;
+    double BLOCKER_OPEN_POS = 0.8;
+    double HOOD_MAX_ANGLE = 0.9;
+    double HOOD_MIN_ANGLE = 0.1;
 
     enum ShootPreset {
         CLOSE(800, HOOD_MAX_ANGLE),

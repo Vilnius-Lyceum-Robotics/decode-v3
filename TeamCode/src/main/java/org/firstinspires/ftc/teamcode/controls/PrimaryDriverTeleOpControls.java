@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.ShootPreset;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetShooterState;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.ToggleBlocker;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
@@ -33,7 +34,7 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
                 }
         );
         add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleIntake())));
-        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.FAR))));
+        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new Shoot())));
         add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
         add(new ButtonCtl(SQUARE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleTransfer())));
         add(new ButtonCtl(GamepadKeys.Button.LEFT_BUMPER, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> chassis.toggleAutoAim()));

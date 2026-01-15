@@ -45,6 +45,10 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
     }
     public void setShooter(double rpm) {
         shooter_rpm = rpm;
+        if (rpm == 0) {
+            stopShooter();
+            return;
+        }
         shooterRight.setVelocity(rpm);
         shooterLeft.setVelocity(rpm);
     }

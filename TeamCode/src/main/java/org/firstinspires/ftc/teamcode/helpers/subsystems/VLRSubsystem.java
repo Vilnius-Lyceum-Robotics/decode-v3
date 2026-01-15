@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.helpers.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -71,6 +75,9 @@ public abstract class VLRSubsystem<T extends VLRSubsystem<T>> extends SubsystemB
         requireSubsystems(subsystem);
         Objects.requireNonNull(instances.get(subsystem)).initialize(hardwareMap);
     }
+    public static Intake getIntake() {return getInstance(Intake.class);}
+    public static Transfer getTransfer() {return getInstance(Transfer.class);}
+    public static Shooter getShooter() {return getInstance(Shooter.class);}
 
     /**
      * Ensures that the specified subsystems are instantiated and available.
