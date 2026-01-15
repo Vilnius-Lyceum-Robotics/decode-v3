@@ -26,11 +26,12 @@ public class AutoCloseTest1 extends AutoBaseTest {
 
     public Command AutoCommand() {
         return new SequentialCommandGroup(
-            new FollowCommand(f, buildPath(CLOSE_START, CLOSE_SHOOT)),
-            new FollowCommand(f, buildPath(CLOSE_SHOOT, SAMPLE_START[0])),
-            intakeCommand(SAMPLE_START[0], SAMPLE_END[0]),
-            new FollowCommand(f, buildPath(SAMPLE_END[0], CLOSE_SHOOT)),
-            new FollowCommand(f, buildPath(CLOSE_SHOOT, CLOSE_PARK))
+            new FollowCommand(f, p.buildPath(CLOSE_START, CLOSE_SHOOT)),
+            new FollowCommand(f, p.buildPath(CLOSE_SHOOT, SAMPLE_START[0])),
+            p.intakeCommand(SAMPLE_START[0], SAMPLE_END[0]),
+            new FollowCommand(f, p.buildPath(SAMPLE_END[0], CLOSE_SHOOT)),
+            p.shoot3balls(),
+            new FollowCommand(f, p.buildPath(CLOSE_SHOOT, CLOSE_PARK))
         );
     }
 }
