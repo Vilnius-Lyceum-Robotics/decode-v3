@@ -14,14 +14,19 @@ public class AutoAimHeading {
 
     private final static Alliance alliance = AllianceSaver.getAlliance();
 
+    public static final Pose blueGoal = new Pose(9, 133);
+    public static final Pose redGoal = new Pose(144-9, 133);
     public static double getTargetHeading(Follower follower) {
-
-        Pose goalPose;
-        if (alliance == RED) goalPose = new Pose(144 - 9, 133);
-        else goalPose = new Pose(9, 133);
-
-        double xLength = goalPose.getX() - follower.getPose().getX();
-        double yLength = goalPose.getY() - follower.getPose().getY();
+        return getTargetHeading(follower.getPose(), alliance == RED ? redGoal : blueGoal);
+    }
+    public static double getTargetHeading(Pose self, Pose goal) {
+        double xLength = goal.getX() - self.getX();
+        double yLength = goal.getY() - self.getY();
 
         return Math.atan2(yLength, xLength);
-}}
+    }
+
+    public static Pose getAutoAimPose(double x, double y) {
+        return new Pose(x, y, getTargetHeading(new Pose(x, y), blueGoal));
+    }
+}
