@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import com.sun.tools.javac.code.Type;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
@@ -17,7 +16,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
     private Servo hood;
     boolean isShooterOn = false;
     double shooter_rpm;
-    private Servo lift;
+    private Servo blocker;
     private double liftAngle;
     private double hoodPos;
     private final double HOOD_STEP = 0.005;
@@ -25,7 +24,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
 
     protected void initialize(HardwareMap hardwareMap) {
 
-        lift = hardwareMap.get(Servo.class, LIFT_SERVO);
+        blocker = hardwareMap.get(Servo.class, BLOCKER_SERVO_NAME);
 
         this.shooter_rpm = 0;
 
@@ -42,7 +41,7 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
         hoodPos = 0.1;
         shooterLeft.setInverted(true);
 
-        setLift(LIFT_DOWN_POS);
+        setBlocker(BLOCKER_CLOSED_POS);
     }
     public void setShooter(double rpm) {
         shooter_rpm = rpm;
@@ -62,8 +61,8 @@ public class Shooter extends VLRSubsystem<Shooter> implements ShooterConfigurati
     public double getCurrentRPM() {
         return shooterRight.getVelocity();
     }
-    public void setLift(double angle) {
-        lift.setPosition(angle);
+    public void setBlocker(double angle) {
+        blocker.setPosition(angle);
         liftAngle = angle;
     }
     public double getHoodPos(){return hoodPos;}

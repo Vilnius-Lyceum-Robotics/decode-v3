@@ -6,13 +6,10 @@ public interface ShooterConfiguration {
 
     String SHOOTER_LEFT = "shooterLeft";
     String SHOOTER_RIGHT = "shooterRight";
-    String LIFT_SERVO = "lift";
+    String BLOCKER_SERVO_NAME = "lift";
     String SHOOTER_HOOD = "hood";
-    double LOW_SPIN_FORCE = 0.08;
-    double LIFT_MIN = 0.0;
-    double LIFT_MAX = 0.8;
-    double LIFT_DOWN_POS = 1;
-    double LIFT_UP_POS = 0;
+    double BLOCKER_CLOSED_POS = 1;
+    double BLOCKER_OPEN_POS = 0;
     double HOOD_MAX_ANGLE = 0.65;
     double HOOD_MIN_ANGLE = 0;
 

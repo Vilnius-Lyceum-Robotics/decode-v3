@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
-import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.LIFT_UP_POS;
+import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.BLOCKER_OPEN_POS;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetLift;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetBlocker;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
@@ -119,7 +119,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
         f.setStartingPose(startPose);
 
         firstDriver = new GamepadEx(gamepad1);
-        CommandScheduler.getInstance().schedule(new SetLift(LIFT_UP_POS));
+        CommandScheduler.getInstance().schedule(new SetBlocker(BLOCKER_OPEN_POS));
 
         waitForStart();
 
