@@ -21,6 +21,7 @@ public class Transfer extends VLRSubsystem<Transfer> implements IntakeConfigurat
     public void setTransfer(boolean on) {
         transfer.set(on ? TRANSFER_SPEED : 0);
     }
+    public void setTransfer(double speed) {transfer.set(speed);}
 
     public void setTransferSpeed(double speed) {
         transfer.set(speed);
