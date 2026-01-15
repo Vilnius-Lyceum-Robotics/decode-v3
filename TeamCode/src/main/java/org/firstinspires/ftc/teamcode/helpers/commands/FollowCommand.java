@@ -7,14 +7,23 @@ import com.pedropathing.paths.PathChain;
 public class FollowCommand extends CommandBase {
     private final Follower follower;
     private final PathChain pathChain;
-    public FollowCommand(Follower follower, PathChain pathChain) {
+    private final Double followSpeed;
+    public FollowCommand(Follower follower, PathChain pathChain){
+        this(follower, pathChain, null);
+    }
+    public FollowCommand(Follower follower, PathChain pathChain, Double followSpeed) {
+        this.followSpeed = followSpeed;
         this.follower = follower;
         this.pathChain = pathChain;
     }
 
     @Override
     public void initialize() {
-        follower.followPath(pathChain, true);
+        if(followSpeed != null) {
+            follower.followPath(pathChain, followSpeed, true);
+        }else{
+            follower.followPath(pathChain, true);
+        }
     }
 
     @Override
