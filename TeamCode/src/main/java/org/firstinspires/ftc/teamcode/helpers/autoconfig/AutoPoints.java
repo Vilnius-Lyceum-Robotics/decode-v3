@@ -17,12 +17,12 @@ public class AutoPoints {
             new Pose(48, 84, Math.toRadians(180)),
             new Pose(48, 60, Math.toRadians(180)),
             new Pose(48, 36, Math.toRadians(180)),
-            new Pose(8, 32, Math.toRadians(270))
+            new Pose(7.5, 32, Math.toRadians(270))
     };
     public static final Pose[] SAMPLE_END = {
             new Pose(16, 84, Math.toRadians(180)),
             new Pose(9, 60, Math.toRadians(180)),
             new Pose(15, 36, Math.toRadians(180)),
-            new Pose(8, 12, Math.toRadians(270))
+            new Pose(7.5, 12, Math.toRadians(270))
     };
 }

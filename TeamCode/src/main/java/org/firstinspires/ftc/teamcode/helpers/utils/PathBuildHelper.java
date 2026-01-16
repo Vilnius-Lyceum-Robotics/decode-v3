@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.utils;
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -10,8 +9,8 @@ import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
-import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.intake.commands.SetIntake;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 
 public class PathBuildHelper {
     private Follower f;
@@ -47,15 +46,27 @@ public class PathBuildHelper {
                 .addPath(new BezierLine(pos1, pos2));
         switch (interpolation){
             case LINEAR:
+                builder.setLinearHeadingInterpolation(pos1.getHeading(), pos2.getHeading());
+                break;
+            case CONSTANT:
+                builder.setConstantHeadingInterpolation(pos2.getHeading());
+                break;
+            case TANGENTIAL:
+                builder.setTangentHeadingInterpolation();
+                break;
         }
         return builder.build();
     }
     public Command intakeCommand(Pose pos1, Pose pos2) {
-        Intake intake = VLRSubsystem.getInstance(Intake.class);
+        return intakeCommand(pos1, pos2, 0.7);
+    }
+    public Command intakeCommand(Pose pos1, Pose pos2, double speed) {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setIntake(true)),
-                new FollowCommand(f, buildPath(pos1, pos2), 0.3),
-                new InstantCommand(() -> intake.setIntake(false))
+                new SetIntake(true),
+                new SetTransfer(true),
+                new FollowCommand(f, buildPath(pos1, pos2), speed),
+                new SetIntake(false),
+                new SetTransfer(false)
         );
     }
     public Command shoot3balls(){

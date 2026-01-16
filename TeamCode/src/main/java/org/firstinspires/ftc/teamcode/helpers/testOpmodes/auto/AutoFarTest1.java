@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import static org.firstinspires.ftc.teamcode.helpers.autoconfig.AutoPoints.*;
 import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
-import org.firstinspires.ftc.teamcode.helpers.utils.PathBuildHelper;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
 
 @Photon
@@ -28,8 +27,8 @@ public class AutoFarTest1 extends AutoBaseTest {
             p.intakeCommand(SAMPLE_START[2], SAMPLE_END[2]),
             new FollowCommand(f, p.buildPath(SAMPLE_END[2], FAR_SHOOT)),
             new Shoot(),
-            new FollowCommand(f, p.buildPath(FAR_SHOOT, SAMPLE_START[3], PathBuildHelper.Interpolation.CONSTANT)),
-            p.intakeCommand(SAMPLE_START[3], SAMPLE_END[3]),
+            new FollowCommand(f, p.buildPath(FAR_SHOOT, SAMPLE_START[3])),
+            p.intakeCommand(SAMPLE_START[3], SAMPLE_END[3], 0.25),
             new FollowCommand(f, p.buildPath(SAMPLE_END[3], FAR_SHOOT)),
             new Shoot(),
             new FollowCommand(f, p.buildPath(FAR_SHOOT, FAR_PARK))
