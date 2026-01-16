@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.helpers.utils.PathBuildHelper;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
 
 public abstract class AutoBaseTest extends VLRLinearOpMode {
     protected boolean isRed;
