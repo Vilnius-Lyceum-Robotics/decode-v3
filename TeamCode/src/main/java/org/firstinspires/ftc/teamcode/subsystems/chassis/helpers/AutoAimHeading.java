@@ -14,8 +14,8 @@ public class AutoAimHeading {
 
     private final static Alliance alliance = AllianceSaver.getAlliance();
 
-    public static final Pose blueGoal = new Pose(9, 133);
-    public static final Pose redGoal = new Pose(144-9, 133);
+    public static final Pose blueGoal = new Pose(10, 135);
+    public static final Pose redGoal = new Pose(144-10, 135);
     public static double getTargetHeading(Follower follower) {
         return getTargetHeading(follower.getPose(), alliance == RED ? redGoal : blueGoal);
     }

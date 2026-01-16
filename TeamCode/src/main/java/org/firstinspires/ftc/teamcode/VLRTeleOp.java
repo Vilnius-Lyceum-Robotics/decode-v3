@@ -48,13 +48,16 @@ public class VLRTeleOp extends VLRLinearOpMode {
         while (opModeIsActive()) {
             follower.updatePose();
             telemetry.addData("Alliance: ", Objects.requireNonNull(AllianceSaver.getAlliance()).name);
-            VLRSubsystem.getInstance(Shooter.class).telemetry(telemetry);
+            VLRSubsystem.getShooter().telemetry(telemetry);
             telemetry.addData("x: ", follower.getPose().getX());
             telemetry.addData("y: ", follower.getPose().getY());
             telemetry.addData("Heading: ", follower.getHeading());
             telemetry.update();
             VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
             telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeading(follower));
+            telemetry.addData("Current RPM: ", VLRSubsystem.getShooter().getCurrentRPM());
+//            VLRSubsystem.getShooter().setShootingInputs();
+//            VLRSubsystem.getShooter().enableShootingPID(); this crashes and i have no energy to figure it out
             primaryDriver.update();
             sleep(20);
         }

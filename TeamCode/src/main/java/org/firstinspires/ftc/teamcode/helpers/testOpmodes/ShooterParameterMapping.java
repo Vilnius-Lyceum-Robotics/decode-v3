@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
-import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.BLOCKER_OPEN_POS;
+import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetBlocker;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
@@ -45,7 +46,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
     Shooter shooter;
-    boolean prevStateRightBumper, prevStateLeftBumper, prevStateDpadUp, prevStateDpadDown, prevStateA = false;
+    boolean prevStateRightBumper, prevStateLeftBumper, prevStateDpadUp, prevStateDpadDown, prevStateA, prevStateB = false;
 
     Follower f;
     Pose[] samplePoints;
@@ -111,6 +112,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
         telemetry = new JoinedTelemetry(PanelsTelemetry.INSTANCE.getFtcTelemetry(), telemetry);
         generateSamplePoints();
 
+        //noinspection unchecked
         VLRSubsystem.requireSubsystems(Chassis.class, Intake.class, Shooter.class, Transfer.class);
         VLRSubsystem.initializeAll(hardwareMap);
         shooter = VLRSubsystem.getInstance(Shooter.class);
@@ -119,7 +121,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
         f.setStartingPose(startPose);
 
         firstDriver = new GamepadEx(gamepad1);
-        CommandScheduler.getInstance().schedule(new SetBlocker(BLOCKER_OPEN_POS));
+        CommandScheduler.getInstance().schedule(new SetBlocker(BLOCKER_CLOSED_POS));
 
         waitForStart();
 
@@ -135,10 +137,10 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 shooter.setHood(shooter.getHoodPos() + 0.05);
             }
             if (gamepad1.dpad_up && !prevStateDpadUp) {
-                shooter.setShooter(shooter.getTargetRPM() + 132);
+                shooter.setShooter(shooter.getTargetRPM() + 100);
             }
             if (gamepad1.dpad_down && !prevStateDpadDown) {
-                shooter.setShooter(shooter.getTargetRPM() - 132);
+                shooter.setShooter(shooter.getTargetRPM() - 100);
             }
             if (gamepad1.a && !prevStateA) {
                 CommandScheduler.getInstance().schedule(
@@ -148,14 +150,19 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                         )
                 );
             }
+            if (gamepad1.bWasPressed() && !prevStateB) {
+                CommandScheduler.getInstance().schedule(new Shoot());
+            }
 
             prevStateDpadUp = gamepad1.dpad_up;
             prevStateRightBumper = gamepad1.right_bumper;
             prevStateLeftBumper = gamepad1.left_bumper;
             prevStateDpadDown = gamepad1.dpad_down;
             prevStateA = gamepad1.a;
+            prevStateB = gamepad1.b;
 
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
+            telemetry.addData("Current RPM: ", shooter.getCurrentRPM());
             telemetry.addData("Hood Angle: ", shooter.getHoodPos());
             telemetry.addData("follower x:", f.getPose().getX());
             telemetry.addData("follower y:", f.getPose().getY());

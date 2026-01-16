@@ -16,7 +16,7 @@ public class Shoot extends SequentialCommandGroup {
         addCommands(
                 // Ready-up and wait until shooter reaches needed speed
                 new SetTransfer(false),
-                new SetShooterState(ShooterConfiguration.ShootPreset.FAR),
+//                new SetShooterState(ShooterConfiguration.ShootPreset.FAR), out only for mapping
                 new SetBlocker(BLOCKER_OPEN_POS),
                 new WaitCommand(1000),
                 // Ball Nr.1
@@ -41,7 +41,7 @@ public class Shoot extends SequentialCommandGroup {
                 new SetTransfer(false),
                 new SetIntake(false),
                 // Finish
-                new SetShooterState(ShooterConfiguration.ShootPreset.STOP),
+//                new SetShooterState(ShooterConfiguration.ShootPreset.STOP),  out only for mapping
                 new SetBlocker(BLOCKER_CLOSED_POS)
         );
     }
