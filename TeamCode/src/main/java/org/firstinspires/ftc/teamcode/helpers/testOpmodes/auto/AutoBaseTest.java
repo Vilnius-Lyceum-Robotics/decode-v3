@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.subsystems.transfer.Transfer;
 
 public abstract class AutoBaseTest extends VLRLinearOpMode {
     protected boolean isRed;
-    private AutoConfigurator ac;
     protected Follower f;
     protected PathBuildHelper p;
 
@@ -50,6 +49,9 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
 
         while (opModeIsActive()) {
             f.update();
+            VLRSubsystem.getShooter().telemetry(telemetry);
+            telemetry.update();
+            System.out.println("loop");
         }
     }
 

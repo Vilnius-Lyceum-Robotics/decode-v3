@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.controls;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -33,10 +34,14 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
                     chassis.drive(leftY, -leftX, -rightX);
                 }
         );
-        add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleIntake())));
+        add(new ButtonCtl(GamepadKeys.Button.RIGHT_BUMPER, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(
+                new SequentialCommandGroup(
+                        new ToggleTransfer(),
+                        new ToggleIntake()
+                )
+        )));
         add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new Shoot())));
         add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
-        add(new ButtonCtl(SQUARE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleTransfer())));
         add(new ButtonCtl(GamepadKeys.Button.LEFT_BUMPER, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> chassis.toggleAutoAim()));
         add(new ButtonCtl(GamepadKeys.Button.DPAD_DOWN, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleBlocker())));
 

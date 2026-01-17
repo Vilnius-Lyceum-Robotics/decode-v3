@@ -58,7 +58,7 @@ public class PathBuildHelper {
         return builder.build();
     }
     public Command intakeCommand(Pose pos1, Pose pos2) {
-        return intakeCommand(pos1, pos2, 0.7);
+        return intakeCommand(pos1, pos2, 1);
     }
     public Command intakeCommand(Pose pos1, Pose pos2, double speed) {
         return new SequentialCommandGroup(

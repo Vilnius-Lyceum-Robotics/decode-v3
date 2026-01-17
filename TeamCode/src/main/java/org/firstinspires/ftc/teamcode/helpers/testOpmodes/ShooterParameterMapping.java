@@ -137,10 +137,10 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 shooter.setHood(shooter.getHoodPos() + 0.05);
             }
             if (gamepad1.dpad_up && !prevStateDpadUp) {
-                shooter.setShooter(shooter.getTargetRPM() + 100);
+                shooter.setTargetRPM(shooter.getTargetRPM() + 100);
             }
             if (gamepad1.dpad_down && !prevStateDpadDown) {
-                shooter.setShooter(shooter.getTargetRPM() - 100);
+                shooter.setTargetRPM(shooter.getTargetRPM() - 100);
             }
             if (gamepad1.a && !prevStateA) {
                 CommandScheduler.getInstance().schedule(
@@ -160,6 +160,8 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
             prevStateDpadDown = gamepad1.dpad_down;
             prevStateA = gamepad1.a;
             prevStateB = gamepad1.b;
+
+            shooter.setShootingInputs(shooter.getTargetRPM());
 
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
             telemetry.addData("Current RPM: ", shooter.getCurrentRPM());

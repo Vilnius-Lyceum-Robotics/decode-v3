@@ -6,7 +6,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.controls.PrimaryDriverTeleOpControls;
-import org.firstinspires.ftc.teamcode.helpers.enums.Alliance;
 import org.firstinspires.ftc.teamcode.helpers.opmode.VLRLinearOpMode;
 import org.firstinspires.ftc.teamcode.helpers.persistence.AllianceSaver;
 import org.firstinspires.ftc.teamcode.helpers.persistence.PoseSaver;

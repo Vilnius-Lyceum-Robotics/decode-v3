@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.shooter;
 
 import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -16,14 +14,12 @@ import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 
 public class Shooter extends VLRSubsystem<Shooter> {
     private MotorEx shooterLeft, shooterRight;
-    private final Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
     private Servo hood;
     boolean isShooterOn = false;
     double targetRPM, currentRPM;
     private Servo blocker;
     private double liftAngle;
     private double hoodPos;
-    private final double HOOD_STEP = 0.005;
     PIDFController shootingPID = new PIDFController(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
 
 
@@ -45,35 +41,32 @@ public class Shooter extends VLRSubsystem<Shooter> {
         hood.setPosition(0.1);
         hoodPos = 0.1;
         shooterLeft.setInverted(true);
-
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
         setBlocker(BLOCKER_CLOSED_POS);
     }
     public void setShooter(double rpm) {
-        targetRPM = rpm;
-        if (rpm == 0) {
-            stopShooter();
-            return;
-        }
-        shooterRight.setVelocity(rpm);
-        shooterLeft.setVelocity(rpm);
+        double clampedRPM = Math.max(-0.05, rpm);
+        shooterRight.set(clampedRPM);
+        shooterLeft.set(clampedRPM);
     }
     public void setTargetRPM(double rpm) {
         this.targetRPM = rpm;
     }
     public void setShootingInputs(double targetRPM) {
         this.targetRPM = targetRPM;
-        this.currentRPM = getCurrentRPM();
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,  getCurrentRPM() != 0 ? SHOOTING_RPM_F / getCurrentRPM() : 0);
     }
     public void setShootingInputs() {
         this.currentRPM = getCurrentRPM();
         shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
     }
-    public void enableShootingPID() {
-        setShooter(shootingPID.calculate(currentRPM, targetRPM));
+
+    @Override
+    public void periodic() {
+        setShooter(shootingPID.calculate(getCurrentRPM(), targetRPM));
     }
     public void setShooterState(ShootPreset preset) {
-        setShooter(preset.rpm);
+        setTargetRPM(preset.rpm);
         setHood(preset.hoodPos);
     }
 
@@ -90,39 +83,19 @@ public class Shooter extends VLRSubsystem<Shooter> {
         liftAngle = angle;
     }
     public double getHoodPos(){return hoodPos;}
-    //TESTING
-    public void hoodUp() {
-        hoodPos = Range.clip(hoodPos + HOOD_STEP, 0, 1);
-        hood.setPosition(hoodPos);
-    }
-    public void hoodDown() {
-        hoodPos = Range.clip(hoodPos - HOOD_STEP, 0, 1);
-        hood.setPosition(hoodPos);
-    }
     public void stopShooter(){
         isShooterOn = false;
         shooterLeft.stopMotor();
         shooterRight.stopMotor();
     }
-    //for testing
-    public void upShooterLeft() {
-        shooterLeft.setVelocity(1000);
-    }
-    public void upShooterRight() {
-        shooterRight.setVelocity(-1000);
-    }
-
     public void telemetry(Telemetry t)
     {
         t.addData("Shooter RPM: ", shooterRight.getVelocity());
         t.addData("Hood angle: ", hoodPos);
         t.addData("Lift angle: ", liftAngle);
         t.addData("Shooter Target RPM: ", targetRPM);
+        t.addData("PID out", shootingPID.calculate(getCurrentRPM(), targetRPM));
     }
-    public boolean isShooterOn() {
-        return isShooterOn;
-    }
-
     public double getLiftAngle(){
         return liftAngle;
     }

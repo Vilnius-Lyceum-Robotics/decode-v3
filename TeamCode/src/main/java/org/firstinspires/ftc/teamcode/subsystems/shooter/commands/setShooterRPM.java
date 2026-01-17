@@ -7,6 +7,6 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 
 public class setShooterRPM extends InstantCommand {
     public setShooterRPM(double rpm) {
-        super(() -> VLRSubsystem.getInstance(Shooter.class).setShooter(rpm));
+        super(() -> VLRSubsystem.getInstance(Shooter.class).setTargetRPM(rpm));
     }
 }
