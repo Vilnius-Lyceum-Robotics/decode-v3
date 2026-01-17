@@ -37,7 +37,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
         startingPose = PoseSaver.getPedroPose();
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startingPose == null ? new Pose(65, 9, Math.toRadians(90)) : startingPose);
+        follower.setStartingPose(!PoseSaver.isPoseSaved() ? new Pose(65, 9, Math.toRadians(90)) : PoseSaver.getPedroPose());
         follower.updatePose();
 
         primaryDriver = new PrimaryDriverTeleOpControls(gamepad1);
@@ -46,6 +46,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
         while (opModeIsActive()) {
             follower.updatePose();
+            VLRSubsystem.getShooter().periodic();
             telemetry.addData("Alliance: ", Objects.requireNonNull(AllianceSaver.getAlliance()).name);
             VLRSubsystem.getShooter().telemetry(telemetry);
             telemetry.addData("x: ", follower.getPose().getX());
@@ -55,10 +56,9 @@ public class VLRTeleOp extends VLRLinearOpMode {
             VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
             telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeading(follower));
             telemetry.addData("Current RPM: ", VLRSubsystem.getShooter().getCurrentRPM());
-//            VLRSubsystem.getShooter().setShootingInputs();
-//            VLRSubsystem.getShooter().enableShootingPID(); this crashes and i have no energy to figure it out
             primaryDriver.update();
             sleep(20);
         }
+        PoseSaver.resetSavedPose();
     }
 }

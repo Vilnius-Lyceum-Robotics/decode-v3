@@ -2,15 +2,19 @@ package org.firstinspires.ftc.teamcode.helpers.testOpmodes.auto;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.helpers.autoconfig.AutoConfigurator;
+import org.firstinspires.ftc.teamcode.helpers.commands.ScheduleRuntimeCommand;
 import org.firstinspires.ftc.teamcode.helpers.enums.Alliance;
 import org.firstinspires.ftc.teamcode.helpers.opmode.VLRLinearOpMode;
 import org.firstinspires.ftc.teamcode.helpers.persistence.AllianceSaver;
+import org.firstinspires.ftc.teamcode.helpers.persistence.PoseSaver;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.helpers.utils.PathBuildHelper;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -45,10 +49,15 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
 
         waitForStart();
 
-        CommandScheduler.getInstance().schedule(AutoCommand());
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new ScheduleRuntimeCommand(this::AutoCommand),
+                        new ScheduleRuntimeCommand(() -> new InstantCommand(() -> PoseSaver.setPedroPose(f.getPose())))
+                ));
 
         while (opModeIsActive()) {
             f.update();
+            VLRSubsystem.getShooter().periodic();
             VLRSubsystem.getShooter().telemetry(telemetry);
             telemetry.update();
             System.out.println("loop");

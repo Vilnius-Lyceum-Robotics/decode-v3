@@ -41,7 +41,7 @@ public class Shooter extends VLRSubsystem<Shooter> {
         hood.setPosition(0.1);
         hoodPos = 0.1;
         shooterLeft.setInverted(true);
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, 0);
         setBlocker(BLOCKER_CLOSED_POS);
     }
     public void setShooter(double rpm) {
@@ -58,11 +58,12 @@ public class Shooter extends VLRSubsystem<Shooter> {
     }
     public void setShootingInputs() {
         this.currentRPM = getCurrentRPM();
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, SHOOTING_RPM_F);
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,  getCurrentRPM() != 0 ? SHOOTING_RPM_F / getCurrentRPM() : 0);
     }
 
     @Override
     public void periodic() {
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,  getCurrentRPM() != 0 ? SHOOTING_RPM_F / getCurrentRPM() : 0);
         setShooter(shootingPID.calculate(getCurrentRPM(), targetRPM));
     }
     public void setShooterState(ShootPreset preset) {

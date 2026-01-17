@@ -41,9 +41,11 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
                 )
         )));
         add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new Shoot())));
-        add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
+        add(new ButtonCtl(GamepadKeys.Button.DPAD_LEFT, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
         add(new ButtonCtl(GamepadKeys.Button.LEFT_BUMPER, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> chassis.toggleAutoAim()));
         add(new ButtonCtl(GamepadKeys.Button.DPAD_DOWN, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleBlocker())));
+        add(new ButtonCtl(CIRCLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true,  (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.FAR))));
+        add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true,  (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.CLOSE))));
 
     }
 }

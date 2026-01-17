@@ -11,13 +11,10 @@ import org.firstinspires.ftc.teamcode.helpers.persistence.AllianceSaver;
 
 @Config
 public class AutoAimHeading {
-
-    private final static Alliance alliance = AllianceSaver.getAlliance();
-
     public static final Pose blueGoal = new Pose(10, 135);
     public static final Pose redGoal = new Pose(144-10, 135);
     public static double getTargetHeading(Follower follower) {
-        return getTargetHeading(follower.getPose(), alliance == RED ? redGoal : blueGoal);
+        return getTargetHeading(follower.getPose(), AllianceSaver.getAlliance() == RED ? redGoal : blueGoal);
     }
     public static double getTargetHeading(Pose self, Pose goal) {
         double xLength = goal.getX() - self.getX();
@@ -27,6 +24,10 @@ public class AutoAimHeading {
     }
 
     public static Pose getAutoAimPose(double x, double y) {
-        return new Pose(x, y, getTargetHeading(new Pose(x, y), blueGoal));
+        if (AllianceSaver.getAlliance() == RED) {
+            return new Pose(x, y, getTargetHeading(new Pose(x, y), redGoal));
+        } else {
+            return new Pose(x, y, getTargetHeading(new Pose(x, y), blueGoal));
+        }
     }
 }

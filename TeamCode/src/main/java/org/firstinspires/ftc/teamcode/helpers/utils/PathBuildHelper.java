@@ -69,9 +69,4 @@ public class PathBuildHelper {
                 new SetTransfer(false)
         );
     }
-    public Command shoot3balls(){
-        return new SequentialCommandGroup(
-
-        );
-    }
 }
