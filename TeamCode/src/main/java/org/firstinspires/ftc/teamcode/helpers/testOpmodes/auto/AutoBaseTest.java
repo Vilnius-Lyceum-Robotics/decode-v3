@@ -44,6 +44,7 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
         f = Constants.createFollower(hardwareMap);
         p = new PathBuildHelper(f, isRed);
         f.setStartingPose(p.getPose(StartPose()));
+        System.out.println("Start Pose: " + f.getPose());
 
         if (isStopRequested()) return;
 
