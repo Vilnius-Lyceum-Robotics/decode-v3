@@ -21,9 +21,11 @@ public class Constants {
             .mass(8.1)
             .forwardZeroPowerAcceleration(-60)
             .lateralZeroPowerAcceleration(-72)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.3, 0, 0.035, 0.001))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.12, 0, 0.02, 0.18))
             .headingPIDFCoefficients(new PIDFCoefficients(1.8, 0, 0.098, 0))
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.008, 0, 0.00001, 0.6, 0.05))
+            .useSecondaryTranslationalPIDF(true)
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.15, 0, 0.01, 0.025))
             .centripetalScaling(0.001);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
@@ -34,8 +36,8 @@ public class Constants {
             .leftFrontMotorName(MOTOR_LEFT_FRONT)
             .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .xVelocity(84.166)
             .yVelocity(60.065);
 
