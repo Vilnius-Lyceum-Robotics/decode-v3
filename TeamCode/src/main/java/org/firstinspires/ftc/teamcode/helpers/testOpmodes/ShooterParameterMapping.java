@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
+import static org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading.blueGoal;
 import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
 
 import com.arcrobotics.ftclib.command.Command;
@@ -19,6 +20,8 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.helpers.autoconfig.AutoPoints;
 import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
 import org.firstinspires.ftc.teamcode.helpers.commands.RepeatNTimesCommand;
 import org.firstinspires.ftc.teamcode.helpers.commands.ScheduleRuntimeCommand;
@@ -26,6 +29,7 @@ import org.firstinspires.ftc.teamcode.helpers.opmode.VLRLinearOpMode;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
+import org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
@@ -39,10 +43,10 @@ import java.util.function.BooleanSupplier;
 @Photon
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
-    int numberOfPoints = 10;
+    int numberOfPoints = 9;
     double distance = 120;
-    Pose startPose = new Pose(20.4296, 123.5672, Math.toRadians(135));
-    Pose goalPose = new Pose(9, 133);
+    Pose startPose = AutoPoints.FAR_START;
+    Pose goalPose = blueGoal;
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
     Shooter shooter;
@@ -60,18 +64,30 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
     }
 
     private void generateSamplePoints(){
+//        samplePoints = new Pose[numberOfPoints];
+//        double angle = Math.toRadians(-45);
+//        Pose offset = new Pose(distance * Math.cos(angle) / numberOfPoints, distance * Math.sin(angle) / numberOfPoints);
+//
+//        for (int i = 0; i < numberOfPoints; i++){
+//            samplePoints[i] = startPose.plus(offset.times(i));
+//            System.out.println("LOGGER POINT: " + samplePoints[i]);
+//        }
         samplePoints = new Pose[numberOfPoints];
-        double angle = Math.toRadians(-45);
-        Pose offset = new Pose(distance * Math.cos(angle) / numberOfPoints, distance * Math.sin(angle) / numberOfPoints);
+        samplePoints[0] = AutoAimHeading.getAutoAimPose(67, 67);
 
-        for (int i = 0; i < numberOfPoints; i++){
-            samplePoints[i] = startPose.plus(offset.times(i));
-            System.out.println("LOGGER POINT: " + samplePoints[i]);
-        }
+        samplePoints[1] = AutoAimHeading.getAutoAimPose(48, 120);
+        samplePoints[2] = AutoAimHeading.getAutoAimPose(48, 96);
+        samplePoints[3] = AutoAimHeading.getAutoAimPose(72, 72);
+        samplePoints[4] = AutoAimHeading.getAutoAimPose(96, 96);
+        samplePoints[5] = AutoAimHeading.getAutoAimPose(120, 120);
+
+        samplePoints[6] = AutoAimHeading.getAutoAimPose(48, 16);
+        samplePoints[7] = AutoAimHeading.getAutoAimPose(72, 24);
+        samplePoints[8] = AutoAimHeading.getAutoAimPose(84, 16);
     }
 
     private Command FollowToNextPoint(int point){
-        return new FollowCommand(f, buildPath(samplePoints[point], samplePoints[point + 1]));
+        return new FollowCommand(f, buildPath(point == -1 ? startPose : samplePoints[point], samplePoints[point + 1]));
     }
 
 
@@ -137,10 +153,10 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 shooter.setHood(shooter.getHoodPos() + 0.05);
             }
             if (gamepad1.dpad_up && !prevStateDpadUp) {
-                shooter.setTargetRPM(shooter.getTargetRPM() + 100);
+                shooter.setShooter(shooter.getTargetRPM() + 100);
             }
             if (gamepad1.dpad_down && !prevStateDpadDown) {
-                shooter.setTargetRPM(shooter.getTargetRPM() - 100);
+                shooter.setShooter(shooter.getTargetRPM() - 100);
             }
             if (gamepad1.a && !prevStateA) {
                 CommandScheduler.getInstance().schedule(
@@ -161,7 +177,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
             prevStateA = gamepad1.a;
             prevStateB = gamepad1.b;
 
-            shooter.setShootingInputs(shooter.getTargetRPM());
+//            shooter.setShootingInputs(shooter.getTargetRPM());
 
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
             telemetry.addData("Current RPM: ", shooter.getCurrentRPM());
@@ -171,7 +187,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
             telemetry.update();
         }
 
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < samplePoints.length; i++) {
             System.out.println(
                     "Data logger " + i + ": " +
                             data[i][0] + ", " +
