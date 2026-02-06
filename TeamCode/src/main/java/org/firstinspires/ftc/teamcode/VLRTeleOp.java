@@ -46,6 +46,7 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
         while (opModeIsActive()) {
             follower.updatePose();
+            VLRSubsystem.getShooter().updateAutoAim(follower);
             VLRSubsystem.getShooter().periodic();
             telemetry.addData("Alliance: ", Objects.requireNonNull(AllianceSaver.getAlliance()).name);
             VLRSubsystem.getShooter().telemetry(telemetry);
@@ -55,6 +56,8 @@ public class VLRTeleOp extends VLRLinearOpMode {
             telemetry.update();
             VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
             telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeading(follower));
+            telemetry.addData("Distance to goal: ", AutoAimHeading.getDistanceToGoal(follower));
+            telemetry.addData("Auto-aim shooter: ", VLRSubsystem.getShooter().isAutoAimEnabled());
             telemetry.addData("Current RPM: ", VLRSubsystem.getShooter().getCurrentRPM());
             primaryDriver.update();
             sleep(20);

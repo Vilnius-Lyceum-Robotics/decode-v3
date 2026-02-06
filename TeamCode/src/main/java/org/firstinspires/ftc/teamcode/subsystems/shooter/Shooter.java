@@ -11,11 +11,16 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.helpers.AutoAimPower;
+
+import com.pedropathing.follower.Follower;
 
 public class Shooter extends VLRSubsystem<Shooter> {
     private MotorEx shooterLeft, shooterRight;
     private Servo hood;
     boolean isShooterOn = false;
+    private boolean autoAimEnabled = false;
     double targetRPM, currentRPM;
     private Servo blocker;
     private double liftAngle;
@@ -105,6 +110,11 @@ public class Shooter extends VLRSubsystem<Shooter> {
         double feedforwardVelocity = currentVelocityTarget * VELOCITY_GAIN;
         double rawOutput = feedforwardAccel + feedforwardVelocity + pidfOutput;
 
+        if (rawOutput < 0) {
+            rawOutput = 0;
+            shootingPID.reset();
+        }
+
         if (!filtersInitialized) {
             filteredMotorOutput = rawOutput;
         }
@@ -116,6 +126,11 @@ public class Shooter extends VLRSubsystem<Shooter> {
     public void setShooterState(ShootPreset preset) {
         setTargetRPM(preset.rpm);
         setHood(preset.hoodPos);
+    }
+
+    public void setShooterStateFromDistance(double distance) {
+        setTargetRPM(AutoAimPower.getRpm(distance));
+        setHood(AutoAimPower.getHood(distance));
     }
 
     public void setHood(double pos) {
@@ -155,5 +170,23 @@ public class Shooter extends VLRSubsystem<Shooter> {
     }
     public double getTargetRPM() {
         return targetRPM;
+    }
+
+    public void toggleAutoAim() {
+        autoAimEnabled = !autoAimEnabled;
+        if (!autoAimEnabled) {
+            stopShooter();
+        }
+    }
+
+    public boolean isAutoAimEnabled() {
+        return autoAimEnabled;
+    }
+
+    public void updateAutoAim(Follower follower) {
+        if (autoAimEnabled) {
+            double distance = AutoAimHeading.getDistanceToGoal(follower);
+            setShooterStateFromDistance(distance);
+        }
     }
 }

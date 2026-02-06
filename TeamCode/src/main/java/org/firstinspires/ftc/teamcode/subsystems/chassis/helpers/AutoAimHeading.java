@@ -22,6 +22,13 @@ public class AutoAimHeading {
         return Math.atan2(yLength, xLength);
     }
 
+    public static double getDistanceToGoal(Follower follower) {
+        Pose goal = AllianceSaver.getAlliance() == RED ? redGoal : blueGoal;
+        double dx = goal.getX() - follower.getPose().getX();
+        double dy = goal.getY() - follower.getPose().getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     public static Pose getAutoAimPose(double x, double y) {
         if (AllianceSaver.getAlliance() == RED) {
             return new Pose(x, y, getTargetHeading(new Pose(x, y), redGoal));
