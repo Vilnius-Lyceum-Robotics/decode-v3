@@ -1,23 +1,23 @@
 package org.firstinspires.ftc.teamcode.subsystems.shooter.commands;
 
-import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
+import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.BLOCKER_CLOSED_POS;
+import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.BLOCKER_OPEN_POS;
 
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.SetIntake;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 
-public class Shoot extends SequentialCommandGroup {
-    public Shoot() {
+public class ShootAuto extends SequentialCommandGroup {
+    public ShootAuto() {
         addRequirements(VLRSubsystem.getShooter(), VLRSubsystem.getIntake(), VLRSubsystem.getTransfer());
         addCommands(
                 // Ready-up and wait until shooter reaches needed speed
                 new SetTransfer(false),
                 new SetBlocker(BLOCKER_OPEN_POS),
-                new WaitCommand(100),
+                new WaitCommand(1000),
                 // Ball Nr.1
                 new SetIntake(true),
                 new SetTransfer(true),

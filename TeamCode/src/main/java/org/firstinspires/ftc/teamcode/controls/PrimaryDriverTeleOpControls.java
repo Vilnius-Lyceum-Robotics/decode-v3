@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.controls;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -8,14 +9,18 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.helpers.controls.DriverControls;
 import org.firstinspires.ftc.teamcode.helpers.controls.button.ButtonCtl;
+import org.firstinspires.ftc.teamcode.helpers.controls.trigger.TriggerCtl;
 import org.firstinspires.ftc.teamcode.helpers.subsystems.VLRSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.chassis.Chassis;
+import org.firstinspires.ftc.teamcode.subsystems.intake.commands.IntakeUnblock;
+import org.firstinspires.ftc.teamcode.subsystems.intake.commands.SetIntake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.ToggleIntake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.ShootPreset;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetShooterState;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.ToggleBlocker;
+import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.ToggleTransfer;
 
 /**
@@ -30,6 +35,9 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
 
         Chassis chassis = VLRSubsystem.getInstance(Chassis.class);
 
+        TriggerAsButton lt = new TriggerAsButton();
+        TriggerAsButton rt = new TriggerAsButton();
+
         addBothSticksHandler(
                 (Double leftY, Double leftX, Double rightY, Double rightX) -> {
                     chassis.drive(leftY, -leftX, -rightX);
@@ -41,10 +49,17 @@ public class PrimaryDriverTeleOpControls extends DriverControls {
                         new ToggleIntake()
                 )
         )));
-        add(new ButtonCtl(CROSS, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new Shoot())));
+        add(new TriggerCtl(GamepadKeys.Trigger.LEFT_TRIGGER, (Double r) -> lt.onUpdate(r, (Boolean a) -> chassis.toggleAutoAim())));
+        add(new TriggerCtl(GamepadKeys.Trigger.RIGHT_TRIGGER, (Double r) -> rt.onUpdate(r, (Boolean a) ->
+                cs.schedule(
+                        new SequentialCommandGroup(
+                                new SetIntake(false),
+                                new SetTransfer(false),
+                                new Shoot(),
+                                new InstantCommand(() -> chassis.setAutoAimEnabled(false))
+                        )))));
         add(new ButtonCtl(GamepadKeys.Button.DPAD_LEFT, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new SetShooterState(ShootPreset.STOP))));
-        add(new ButtonCtl(GamepadKeys.Button.LEFT_BUMPER, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> chassis.toggleAutoAim()));
-        add(new ButtonCtl(GamepadKeys.Button.DPAD_DOWN, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new ToggleBlocker())));
+        add(new ButtonCtl(GamepadKeys.Button.DPAD_DOWN, ButtonCtl.Trigger.WAS_JUST_PRESSED, true, (Boolean c) -> cs.schedule(new IntakeUnblock())));
         add(new ButtonCtl(TRIANGLE, ButtonCtl.Trigger.WAS_JUST_PRESSED, true,  (Boolean c) -> VLRSubsystem.getInstance(Shooter.class).toggleAutoAim()));
 
     }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.helpers.utils;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -9,6 +10,7 @@ import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
+import org.firstinspires.ftc.teamcode.helpers.commands.ScheduleRuntimeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.intake.commands.SetIntake;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 
@@ -65,8 +67,14 @@ public class PathBuildHelper {
                 new SetIntake(true),
                 new SetTransfer(true),
                 new FollowCommand(f, buildPath(pos1, pos2), speed),
-                new SetIntake(false),
-                new SetTransfer(false)
+                new ScheduleRuntimeCommand(
+                        () -> new SequentialCommandGroup(
+                                new WaitCommand(500),
+                                new SetIntake(false),
+                                new SetTransfer(false)
+                        )
+                )
+
         );
     }
 }

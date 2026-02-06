@@ -64,6 +64,10 @@ public class Chassis extends VLRSubsystem<Chassis> {
         autoAimEnabled = !autoAimEnabled;
     }
 
+    public void setAutoAimEnabled(boolean value) {
+        autoAimEnabled = value;
+    }
+
     public void setHeadingInputs(double currentHeading, double targetHeading) {
         this.currentHeading = currentHeading;
         this.targetHeading = targetHeading;

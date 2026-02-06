@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.ShootPreset;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetShooterState;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.ShootAuto;
 
 @Photon
 @Autonomous(name = "CLOSE", group = "Auto")
@@ -23,15 +24,18 @@ public class AutoCloseTest1 extends AutoBaseTest {
 
     public Command AutoCommand() {
         return new SequentialCommandGroup(
-                new SetShooterState(f),
                 new FollowCommand(f, p.buildPath(CLOSE_START, CLOSE_SHOOT)),
-                new SetShooterState(f),
-                new Shoot(),
+                new ShootAuto(),
                 new FollowCommand(f, p.buildPath(CLOSE_SHOOT, SAMPLE_START[0])),
                 p.intakeCommand(SAMPLE_START[0], SAMPLE_END[0]),
-                new FollowCommand(f, p.buildPath(SAMPLE_END[0], CLOSE_SHOOT)),
-                new SetShooterState(f),
-                new Shoot(),
+                new FollowCommand(f, p.buildPath(SAMPLE_END[0], CLOSE_OPEN_GATE_START)),
+                new FollowCommand(f, p.buildPath(CLOSE_OPEN_GATE_START, CLOSE_OPEN_GATE)),
+                new FollowCommand(f, p.buildPath(CLOSE_OPEN_GATE, CLOSE_SHOOT)),
+                new ShootAuto(),
+                new FollowCommand(f, p.buildPath(CLOSE_SHOOT, SAMPLE_START[1])),
+                p.intakeCommand(SAMPLE_START[1], SAMPLE_END[1]),
+                new FollowCommand(f, p.buildPath(SAMPLE_END[1], CLOSE_SHOOT)),
+                new ShootAuto(),
                 new SetShooterState(ShootPreset.STOP),
                 new FollowCommand(f, p.buildPath(CLOSE_SHOOT, CLOSE_PARK)),
                 new SetShooterState(ShootPreset.STOP)

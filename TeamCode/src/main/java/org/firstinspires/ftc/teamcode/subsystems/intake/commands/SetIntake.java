@@ -9,4 +9,8 @@ public class SetIntake extends InstantCommand {
     public SetIntake(boolean on) {
         super (() -> VLRSubsystem.getInstance(Intake.class).setIntake(on));
     }
+
+    public SetIntake(double val) {
+        super (() -> VLRSubsystem.getInstance(Intake.class).setIntakeSpeed(val));
+    }
 }

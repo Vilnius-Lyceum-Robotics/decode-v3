@@ -10,7 +10,10 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.Sh
 
 public class SetShooterState extends InstantCommand {
     public SetShooterState(ShootPreset preset) {
-        super (() -> VLRSubsystem.getInstance(Shooter.class).setShooterState(preset));
+        super (() -> {
+            VLRSubsystem.getShooter().setAutoAimEnabled(false);
+            VLRSubsystem.getInstance(Shooter.class).setShooterState(preset);
+        });
     }
 
     public SetShooterState(Follower follower) {

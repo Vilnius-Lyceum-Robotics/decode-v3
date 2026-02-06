@@ -44,19 +44,22 @@ public class VLRTeleOp extends VLRLinearOpMode {
 
         waitForStart();
 
+        VLRSubsystem.getInstance(Shooter.class).toggleAutoAim();
+
         while (opModeIsActive()) {
             follower.updatePose();
-            VLRSubsystem.getShooter().updateAutoAim(follower);
+            VLRSubsystem.getShooter().updateAutoAimCompensated(follower);
             VLRSubsystem.getShooter().periodic();
             telemetry.addData("Alliance: ", Objects.requireNonNull(AllianceSaver.getAlliance()).name);
-            VLRSubsystem.getShooter().telemetry(telemetry);
             telemetry.addData("x: ", follower.getPose().getX());
             telemetry.addData("y: ", follower.getPose().getY());
             telemetry.addData("Heading: ", follower.getHeading());
             telemetry.update();
-            VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeading(follower));
-            telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeading(follower));
-            telemetry.addData("Distance to goal: ", AutoAimHeading.getDistanceToGoal(follower));
+            VLRSubsystem.getInstance(Chassis.class).setHeadingInputs(follower.getHeading(), AutoAimHeading.getTargetHeadingCompensated(follower));
+            telemetry.addData("Target heading: ", AutoAimHeading.getTargetHeadingCompensated(follower));
+            telemetry.addData("Target heading (no comp): ", AutoAimHeading.getTargetHeading(follower));
+            telemetry.addData("Distance to goal: ", AutoAimHeading.getDistanceToGoalCompensated(follower));
+            telemetry.addData("Distance (no comp): ", AutoAimHeading.getDistanceToGoal(follower));
             telemetry.addData("Auto-aim shooter: ", VLRSubsystem.getShooter().isAutoAimEnabled());
             telemetry.addData("Current RPM: ", VLRSubsystem.getShooter().getCurrentRPM());
             primaryDriver.update();

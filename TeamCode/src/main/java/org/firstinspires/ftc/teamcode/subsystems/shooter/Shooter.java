@@ -89,39 +89,43 @@ public class Shooter extends VLRSubsystem<Shooter> {
 
     @Override
     public void periodic() {
-        double velocityError = targetRPM - currentVelocityTarget;
+        try {
+            double velocityError = targetRPM - currentVelocityTarget;
 
-        if (Math.abs(velocityError) > MAX_ACCELERATION) {
-            currentVelocityTarget += Math.signum(velocityError) * MAX_ACCELERATION;
-        } else {
-            currentVelocityTarget = targetRPM;
+            if (Math.abs(velocityError) > MAX_ACCELERATION) {
+                currentVelocityTarget += Math.signum(velocityError) * MAX_ACCELERATION;
+            } else {
+                currentVelocityTarget = targetRPM;
+            }
+
+            double acceleration = currentVelocityTarget - previousVelocityTarget;
+            previousVelocityTarget = currentVelocityTarget;
+
+            currentRPM = getFilteredVelocity();
+
+            shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,
+                    currentRPM != 0 ? SHOOTING_RPM_F / currentRPM : 0);
+
+            double pidfOutput = shootingPID.calculate(currentRPM, currentVelocityTarget);
+            double feedforwardAccel = acceleration * ACCELERATION_GAIN;
+            double feedforwardVelocity = currentVelocityTarget * VELOCITY_GAIN;
+            double rawOutput = feedforwardAccel + feedforwardVelocity + pidfOutput;
+
+            if (rawOutput < 0) {
+                rawOutput = 0;
+                shootingPID.reset();
+            }
+
+            if (!filtersInitialized) {
+                filteredMotorOutput = rawOutput;
+            }
+            filteredMotorOutput = OUTPUT_FILTER_ALPHA * rawOutput +
+                    (1 - OUTPUT_FILTER_ALPHA) * filteredMotorOutput;
+
+            setShooter(filteredMotorOutput);
+        } catch (Exception e) {
+            System.out.println("Shooter err: " + e);
         }
-
-        double acceleration = currentVelocityTarget - previousVelocityTarget;
-        previousVelocityTarget = currentVelocityTarget;
-
-        currentRPM = getFilteredVelocity();
-
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,
-                           currentRPM != 0 ? SHOOTING_RPM_F / currentRPM : 0);
-
-        double pidfOutput = shootingPID.calculate(currentRPM, currentVelocityTarget);
-        double feedforwardAccel = acceleration * ACCELERATION_GAIN;
-        double feedforwardVelocity = currentVelocityTarget * VELOCITY_GAIN;
-        double rawOutput = feedforwardAccel + feedforwardVelocity + pidfOutput;
-
-        if (rawOutput < 0) {
-            rawOutput = 0;
-            shootingPID.reset();
-        }
-
-        if (!filtersInitialized) {
-            filteredMotorOutput = rawOutput;
-        }
-        filteredMotorOutput = OUTPUT_FILTER_ALPHA * rawOutput +
-                             (1 - OUTPUT_FILTER_ALPHA) * filteredMotorOutput;
-
-        setShooter(filteredMotorOutput);
     }
     public void setShooterState(ShootPreset preset) {
         setTargetRPM(preset.rpm);
@@ -176,7 +180,14 @@ public class Shooter extends VLRSubsystem<Shooter> {
         autoAimEnabled = !autoAimEnabled;
         if (!autoAimEnabled) {
             stopShooter();
+        } else {
+            shooterLeft.set(0.5);
+            shooterRight.set(0.5);
         }
+    }
+
+    public void setAutoAimEnabled(boolean value) {
+        autoAimEnabled = value;
     }
 
     public boolean isAutoAimEnabled() {
@@ -187,6 +198,17 @@ public class Shooter extends VLRSubsystem<Shooter> {
         if (autoAimEnabled) {
             double distance = AutoAimHeading.getDistanceToGoal(follower);
             setShooterStateFromDistance(distance);
+        }
+    }
+
+    /**
+     * Updates auto aim with velocity compensation for shooting while moving
+     * Use this method in TeleOp for moving shots
+     */
+    public void updateAutoAimCompensated(Follower follower) {
+        if (autoAimEnabled) {
+            double compensatedDistance = AutoAimHeading.getDistanceToGoalCompensated(follower);
+            setShooterStateFromDistance(compensatedDistance);
         }
     }
 }

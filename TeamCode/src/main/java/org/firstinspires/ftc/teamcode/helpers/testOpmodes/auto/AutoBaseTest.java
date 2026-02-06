@@ -49,6 +49,7 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
         if (isStopRequested()) return;
 
         waitForStart();
+        VLRSubsystem.getShooter().setAutoAimEnabled(true);
 
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
@@ -58,6 +59,7 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
 
         while (opModeIsActive()) {
             f.update();
+            VLRSubsystem.getShooter().updateAutoAim(f);
             VLRSubsystem.getShooter().periodic();
             VLRSubsystem.getShooter().telemetry(telemetry);
             telemetry.update();
