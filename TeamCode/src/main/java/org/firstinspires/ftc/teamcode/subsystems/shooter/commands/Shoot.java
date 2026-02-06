@@ -29,7 +29,7 @@ public class Shoot extends SequentialCommandGroup {
                 new WaitCommand(600),
                 new SetTransfer(true),
                 new SetIntake(true),
-                new WaitCommand(200),
+                new WaitCommand(150),
                 new SetTransfer(false),
                 new SetIntake(false),
                 // Ball Nr.3

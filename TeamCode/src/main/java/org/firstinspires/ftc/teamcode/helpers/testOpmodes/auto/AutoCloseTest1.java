@@ -10,7 +10,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.helpers.commands.FollowCommand;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.ShootPreset;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.SetShooterState;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.commands.Shoot;
 
@@ -23,16 +23,18 @@ public class AutoCloseTest1 extends AutoBaseTest {
 
     public Command AutoCommand() {
         return new SequentialCommandGroup(
-                new SetShooterState(ShooterConfiguration.ShootPreset.CLOSE),
+                new SetShooterState(f),
                 new FollowCommand(f, p.buildPath(CLOSE_START, CLOSE_SHOOT)),
+                new SetShooterState(f),
                 new Shoot(),
                 new FollowCommand(f, p.buildPath(CLOSE_SHOOT, SAMPLE_START[0])),
                 p.intakeCommand(SAMPLE_START[0], SAMPLE_END[0]),
                 new FollowCommand(f, p.buildPath(SAMPLE_END[0], CLOSE_SHOOT)),
+                new SetShooterState(f),
                 new Shoot(),
-                new SetShooterState(ShooterConfiguration.ShootPreset.STOP),
+                new SetShooterState(ShootPreset.STOP),
                 new FollowCommand(f, p.buildPath(CLOSE_SHOOT, CLOSE_PARK)),
-                new SetShooterState(ShooterConfiguration.ShootPreset.STOP)
+                new SetShooterState(ShootPreset.STOP)
         );
     }
 }

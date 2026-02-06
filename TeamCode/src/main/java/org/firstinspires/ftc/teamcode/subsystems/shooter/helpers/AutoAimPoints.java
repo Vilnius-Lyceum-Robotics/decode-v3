@@ -19,5 +19,6 @@ public class AutoAimPoints {
             new Point(111.02, 0.65, 2400),
             new Point(124.92, 0.65, 2400),
             new Point(127.14, 0.60, 2500),
+            new Point(200, 0.60, 2600),
     };
 }
