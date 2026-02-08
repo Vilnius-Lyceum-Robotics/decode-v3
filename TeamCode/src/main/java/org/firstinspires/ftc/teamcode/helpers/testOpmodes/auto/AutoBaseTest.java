@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.follower.Follower;
@@ -53,8 +54,9 @@ public abstract class AutoBaseTest extends VLRLinearOpMode {
 
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                        new ScheduleRuntimeCommand(this::AutoCommand),
-                        new ScheduleRuntimeCommand(() -> new InstantCommand(() -> PoseSaver.setPedroPose(f.getPose())))
+                        AutoCommand(),
+                        new WaitCommand(5000),
+                        new InstantCommand(() -> PoseSaver.setPedroPose(f.getPose()))
                 ));
 
         while (opModeIsActive()) {

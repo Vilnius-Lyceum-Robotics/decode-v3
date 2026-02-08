@@ -8,6 +8,7 @@ public class AutoPoints {
     public static final Pose FAR_START = new Pose(65, 9, Math.toRadians(90));
 
     public static final Pose FAR_SHOOT_NO_ANGLE = new Pose(50, 14, Math.toRadians(90));
+    public static final Pose FAR_SHOOT_PRE_ANGLE = new Pose(50, 20, Math.toRadians(270));
     public static final Pose FAR_SHOOT = AutoAimHeading.getAutoAimPose(55, 12);
     public static final Pose FAR_PARK = new Pose(30, 12, Math.toRadians(90));
 
