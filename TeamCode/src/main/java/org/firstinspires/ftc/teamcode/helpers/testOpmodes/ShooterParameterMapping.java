@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
 import static org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading.blueGoal;
-import static org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading.redGoal;
 import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
 
 import com.arcrobotics.ftclib.command.Command;
@@ -47,9 +46,8 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 9;
-    double distance = 120;
     Pose startPose = AutoPoints.FAR_START;
-    Pose goalPose = redGoal;
+    Pose goalPose = blueGoal;
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
     Shooter shooter;
@@ -74,20 +72,20 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 //        for (int i = 0; i < numberOfPoints; i++){
 //            samplePoints[i] = startPose.plus(offset.times(i));
 //            System.out.println("LOGGER POINT: " + samplePoints[i]);
-        AllianceSaver.setAlliance(Alliance.RED);
+        AllianceSaver.setAlliance(Alliance.BLUE);
 //        }
         samplePoints = new Pose[numberOfPoints];
-        samplePoints[0] = AutoAimHeading.getAutoAimPose(144 - 67, 67);
+        samplePoints[0] = AutoAimHeading.getAutoAimPose(67, 67);
 
-        samplePoints[1] = AutoAimHeading.getAutoAimPose(144 - 48, 120);
-        samplePoints[2] = AutoAimHeading.getAutoAimPose(144 - 48, 96);
-        samplePoints[3] = AutoAimHeading.getAutoAimPose(144- 72, 72);
-        samplePoints[4] = AutoAimHeading.getAutoAimPose(144 - 96, 96);
-        samplePoints[5] = AutoAimHeading.getAutoAimPose(144- 120, 120);
+        samplePoints[1] = AutoAimHeading.getAutoAimPose(48, 120);
+        samplePoints[2] = AutoAimHeading.getAutoAimPose(48, 96);
+        samplePoints[3] = AutoAimHeading.getAutoAimPose(72, 72);
+        samplePoints[4] = AutoAimHeading.getAutoAimPose(96, 96);
+        samplePoints[5] = AutoAimHeading.getAutoAimPose(120, 120);
 
-        samplePoints[6] = AutoAimHeading.getAutoAimPose(144-48, 16);
-        samplePoints[7] = AutoAimHeading.getAutoAimPose(144-72, 24);
-        samplePoints[8] = AutoAimHeading.getAutoAimPose(144-84, 16);
+        samplePoints[6] = AutoAimHeading.getAutoAimPose(48, 16);
+        samplePoints[7] = AutoAimHeading.getAutoAimPose(72, 24);
+        samplePoints[8] = AutoAimHeading.getAutoAimPose(84, 16);
     }
 
     private Command FollowToNextPoint(int point){
