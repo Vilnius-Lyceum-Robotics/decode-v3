@@ -74,20 +74,21 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 //        for (int i = 0; i < numberOfPoints; i++){
 //            samplePoints[i] = startPose.plus(offset.times(i));
 //            System.out.println("LOGGER POINT: " + samplePoints[i]);
-        AllianceSaver.setAlliance(Alliance.RED);
+//        AllianceSaver.setAlliance(Alliance.RED);
+
 //        }
         samplePoints = new Pose[numberOfPoints];
-        samplePoints[0] = AutoAimHeading.getAutoAimPose(144 - 67, 67);
+        samplePoints[0] = AutoAimHeading.getAutoAimPose(67, 67);
 
-        samplePoints[1] = AutoAimHeading.getAutoAimPose(144 - 48, 120);
-        samplePoints[2] = AutoAimHeading.getAutoAimPose(144 - 48, 96);
-        samplePoints[3] = AutoAimHeading.getAutoAimPose(144- 72, 72);
-        samplePoints[4] = AutoAimHeading.getAutoAimPose(144 - 96, 96);
-        samplePoints[5] = AutoAimHeading.getAutoAimPose(144- 120, 120);
+        samplePoints[1] = AutoAimHeading.getAutoAimPose(48, 120);
+        samplePoints[2] = AutoAimHeading.getAutoAimPose(48, 96);
+        samplePoints[3] = AutoAimHeading.getAutoAimPose(72, 72);
+        samplePoints[4] = AutoAimHeading.getAutoAimPose(96, 96);
+        samplePoints[5] = AutoAimHeading.getAutoAimPose(120, 120);
 
-        samplePoints[6] = AutoAimHeading.getAutoAimPose(144-48, 16);
-        samplePoints[7] = AutoAimHeading.getAutoAimPose(144-72, 24);
-        samplePoints[8] = AutoAimHeading.getAutoAimPose(144-84, 16);
+        samplePoints[6] = AutoAimHeading.getAutoAimPose(48, 16);
+        samplePoints[7] = AutoAimHeading.getAutoAimPose(72, 24);
+        samplePoints[8] = AutoAimHeading.getAutoAimPose(84, 16);
     }
 
     private Command FollowToNextPoint(int point){
@@ -147,6 +148,8 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
         CommandScheduler.getInstance().schedule(AutoCommand(numberOfPoints, ()-> firstDriver.getButton(GamepadKeys.Button.Y)));
 
+        long delay = 600;
+
         while (opModeIsActive()) {
             f.update();
 
@@ -162,6 +165,12 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
             if (gamepad1.dpad_down && !prevStateDpadDown) {
                 shooter.setTargetRPM(shooter.getTargetRPM() - 100);
             }
+            if (gamepad1.right_bumper && !prevStateRightBumper) {
+                delay += 25;
+            }
+            if (gamepad1.left_bumper && !prevStateLeftBumper) {
+                delay -= 25;
+            }
             if (gamepad1.a && !prevStateA) {
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
@@ -171,7 +180,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 );
             }
             if (gamepad1.bWasPressed() && !prevStateB) {
-                CommandScheduler.getInstance().schedule(new Shoot());
+                CommandScheduler.getInstance().schedule(new Shoot(delay));
             }
 
             prevStateDpadUp = gamepad1.dpad_up;
@@ -183,6 +192,7 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
             shooter.setShootingInputs(shooter.getTargetRPM());
 
+            telemetry.addData("Shoot delay: ", delay);
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
             telemetry.addData("Current RPM: ", shooter.getCurrentRPM());
             telemetry.addData("Hood Angle: ", shooter.getHoodPos());
