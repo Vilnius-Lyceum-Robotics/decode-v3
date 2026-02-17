@@ -12,13 +12,13 @@ public class AutoAimPoints {
         }
     }
     protected final static Point[] referencePoints = {
-            new Point(40.85, 0.15, 1800),
-            new Point(54.45, 0.15, 1900),
-            new Point(88.39, 0.55, 2200),
-            new Point(94.43, 0.55, 2200),
-            new Point(111.02, 0.65, 2400),
-            new Point(124.92, 0.65, 2400),
+            new Point(40.85, 0.1, 1650),
+            new Point(54.45, 0.15, 1850),
+            new Point(88.39, 0.25, 2200),
+            new Point(94.43, 0.35, 2300),
+            new Point(111.02, 0.4, 2400),
+            new Point(124.92, 0.55, 2400),
             new Point(127.14, 0.60, 2500),
-            new Point(200, 0.60, 2600),
+            new Point(140.13, 0.65, 2600),
     };
 }

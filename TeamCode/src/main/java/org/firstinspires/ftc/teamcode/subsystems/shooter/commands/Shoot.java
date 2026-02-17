@@ -12,9 +12,6 @@ import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 
 public class Shoot extends SequentialCommandGroup {
     public Shoot() {
-        this(600L);
-    }
-    public Shoot(long delay) {
         addRequirements(VLRSubsystem.getShooter(), VLRSubsystem.getIntake(), VLRSubsystem.getTransfer());
         addCommands(
                 // Ready-up and wait until shooter reaches needed speed
@@ -29,14 +26,14 @@ public class Shoot extends SequentialCommandGroup {
                 new WaitCommand(400),
                 new SetIntake(false),
                 // Ball Nr.2
-                new WaitCommand(delay),
+                new WaitCommand(150),
                 new SetTransfer(true),
                 new SetIntake(true),
                 new WaitCommand(150),
                 new SetTransfer(false),
                 new SetIntake(false),
                 // Ball Nr.3
-                new WaitCommand(delay),
+                new WaitCommand(500),
                 new SetTransfer(true),
                 new SetIntake(true),
                 new WaitCommand(200),

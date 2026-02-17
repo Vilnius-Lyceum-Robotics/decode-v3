@@ -62,6 +62,8 @@ public class VLRTeleOp extends VLRLinearOpMode {
             telemetry.addData("Distance (no comp): ", AutoAimHeading.getDistanceToGoal(follower));
             telemetry.addData("Auto-aim shooter: ", VLRSubsystem.getShooter().isAutoAimEnabled());
             telemetry.addData("Current RPM: ", VLRSubsystem.getShooter().getCurrentRPM());
+            telemetry.addData("Target RPM: ", VLRSubsystem.getShooter().getTargetRPM());
+            telemetry.addData("Hood pos: ", VLRSubsystem.getShooter().getHoodPos());
             primaryDriver.update();
             sleep(20);
         }

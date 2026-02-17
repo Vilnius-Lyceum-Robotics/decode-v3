@@ -46,12 +46,12 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 9;
-    Pose startPose = AutoPoints.FAR_START;
+    Pose startPose = new Pose(7, 89, Math.toRadians(0));
     Pose goalPose = blueGoal;
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
     Shooter shooter;
-    boolean prevStateRightBumper, prevStateLeftBumper, prevStateDpadUp, prevStateDpadDown, prevStateA, prevStateB = false;
+    boolean prevStateRightBumper, prevStateLeftBumper, prevStateLeftTrigger, prevStateRightTrigger, prevStateDpadUp, prevStateDpadDown, prevStateDpadLeft, prevStateDpadRight, prevStateA, prevStateB, prevStateX;
 
     Follower f;
     Pose[] samplePoints;
@@ -94,13 +94,18 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
     }
 
 
+    public double getDistance(){
+        double deltaX = goalPose.getX() - samplePoints[currentPointIndex].getX();
+        double deltaY = goalPose.getY() - samplePoints[currentPointIndex].getY();
+        return Math.hypot(deltaX, deltaY);
+    }
     private Command LogHoodAndShooterCommand(double hoodAngle, double shooterSpeed, int currentPointIndex){
         return new org.firstinspires.ftc.teamcode.helpers.commands.InstantCommand() {
             @Override
             public void run() {
                 double deltaX = goalPose.getX() - samplePoints[currentPointIndex].getX();
                 double deltaY = goalPose.getY() - samplePoints[currentPointIndex].getY();
-                double distance =  Math.hypot(deltaX, deltaY);
+                double distance = Math.hypot(deltaX, deltaY);
 
                 System.out.println("logger: distance - " + distance);
                 System.out.println("logger: hood angle - " + hoodAngle);
@@ -146,8 +151,6 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
 
         CommandScheduler.getInstance().schedule(AutoCommand(numberOfPoints, ()-> firstDriver.getButton(GamepadKeys.Button.Y)));
 
-        long delay = 600;
-
         while (opModeIsActive()) {
             f.update();
 
@@ -163,11 +166,11 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
             if (gamepad1.dpad_down && !prevStateDpadDown) {
                 shooter.setTargetRPM(shooter.getTargetRPM() - 100);
             }
-            if (gamepad1.right_bumper && !prevStateRightBumper) {
-                delay += 25;
+            if (gamepad1.right_trigger_pressed && !prevStateRightTrigger) {
+                shooter.setTargetRPM(shooter.getTargetRPM() + 300);
             }
-            if (gamepad1.left_bumper && !prevStateLeftBumper) {
-                delay -= 25;
+            if (gamepad1.left_trigger_pressed && !prevStateLeftTrigger) {
+                shooter.setTargetRPM(shooter.getTargetRPM() - 300);
             }
             if (gamepad1.a && !prevStateA) {
                 CommandScheduler.getInstance().schedule(
@@ -177,20 +180,29 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                         )
                 );
             }
-            if (gamepad1.bWasPressed() && !prevStateB) {
-                CommandScheduler.getInstance().schedule(new Shoot(delay));
+            if (gamepad1.b && !prevStateB) {
+                CommandScheduler.getInstance().schedule(new Shoot());
+            }
+            if (gamepad1.x && !prevStateX) {
+                System.out.println("Transitional logger: distance - " + getDistance());
+                System.out.println("Transitional logger: hood angle - " + VLRSubsystem.getInstance(Shooter.class).getHoodPos());
+                System.out.println("Transitional logger: shooter - " + VLRSubsystem.getInstance(Shooter.class).getTargetRPM());
             }
 
             prevStateDpadUp = gamepad1.dpad_up;
+            prevStateDpadDown = gamepad1.dpad_down;
+            prevStateDpadLeft = gamepad1.dpad_left;
+            prevStateDpadRight = gamepad1.dpad_right;
             prevStateRightBumper = gamepad1.right_bumper;
             prevStateLeftBumper = gamepad1.left_bumper;
-            prevStateDpadDown = gamepad1.dpad_down;
+            prevStateRightTrigger = gamepad1.right_trigger_pressed;
+            prevStateLeftTrigger = gamepad1.left_trigger_pressed;
             prevStateA = gamepad1.a;
             prevStateB = gamepad1.b;
+            prevStateX = gamepad1.x;
 
             shooter.setShootingInputs(shooter.getTargetRPM());
 
-            telemetry.addData("Shoot delay: ", delay);
             telemetry.addData("Target RPM: ", shooter.getTargetRPM());
             telemetry.addData("Current RPM: ", shooter.getCurrentRPM());
             telemetry.addData("Hood Angle: ", shooter.getHoodPos());

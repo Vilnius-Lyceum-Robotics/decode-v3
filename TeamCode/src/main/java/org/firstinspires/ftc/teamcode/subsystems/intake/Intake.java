@@ -18,7 +18,7 @@ public class Intake extends VLRSubsystem<Intake> implements IntakeConfiguration 
     }
 
     public void setIntake(boolean on) {
-        intake.set(on ? INTAKE_SPEED : 0);
+        intake.set(on ? INTAKE_SPEED  : 0);
     }
 
     public void setIntakeSpeed(double speed) {
