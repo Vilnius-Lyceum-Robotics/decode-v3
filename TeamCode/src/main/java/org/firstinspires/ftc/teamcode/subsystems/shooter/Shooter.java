@@ -74,7 +74,7 @@ public class Shooter extends VLRSubsystem<Shooter> {
     }
 
     private double getFilteredVelocity() {
-        double rawVelocity = shooterRight.getVelocity();
+        double rawVelocity = shooterLeft.getVelocity();
 
         if (!filtersInitialized) {
             filteredEncoderVelocity = rawVelocity;

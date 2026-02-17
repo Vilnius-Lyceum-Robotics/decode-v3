@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers.testOpmodes;
 
 import static org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading.blueGoal;
-import static org.firstinspires.ftc.teamcode.subsystems.chassis.helpers.AutoAimHeading.redGoal;
 import static org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration.*;
 
 import com.arcrobotics.ftclib.command.Command;
@@ -47,9 +46,8 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 9;
-    double distance = 120;
     Pose startPose = AutoPoints.FAR_START;
-    Pose goalPose = redGoal;
+    Pose goalPose = blueGoal;
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
     Shooter shooter;
