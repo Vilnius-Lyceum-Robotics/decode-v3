@@ -12,20 +12,20 @@ public class ShooterConfiguration {
     public static double BLOCKER_OPEN_POS = 0.8;
     public static double HOOD_MAX_ANGLE = 0.65;
     public static double HOOD_MIN_ANGLE = 0.1;
-    public static double SHOOTING_RPM_P = 0.001;
+    public static double SHOOTING_RPM_P = 0.0015;
     public static double SHOOTING_RPM_I = 0;
-    public static double SHOOTING_RPM_D = 2.0E-5;
+    public static double SHOOTING_RPM_D = 4.0E-5;
     public static double SHOOTING_RPM_F = 0.2;
     public static double TARGET_RPM = 0;
 
     // Acceleration control
-    public static double MAX_ACCELERATION = 100; // RPM per cycle (tune this)
-    public static double ACCELERATION_GAIN = 5.0E-4; // 'a' coefficient
-    public static double VELOCITY_GAIN = 1.0E-4; // 'v' coefficient
+    public static double MAX_ACCELERATION = 200; // RPM per cycle (tune this)
+    public static double VELOCITY_GAIN = 0.00027;
+    public static double ACCELERATION_GAIN = 1.0E-3;
 
     // Low pass filter constants (0 < alpha <= 1, lower = more filtering)
     public static double ENCODER_FILTER_ALPHA = 0.3; // For velocity readings
-    public static double OUTPUT_FILTER_ALPHA = 0.3; // For motor output
+    public static double OUTPUT_FILTER_ALPHA = 0.4; // For motor output
 
     public enum ShootPreset {
         CENTER(2300, 0.55), // x: 65 y: 80

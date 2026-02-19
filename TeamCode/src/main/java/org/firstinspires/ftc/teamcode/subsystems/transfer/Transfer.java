@@ -16,6 +16,8 @@ public class Transfer extends VLRSubsystem<Transfer> implements IntakeConfigurat
 
         transfer.setRunMode(Motor.RunMode.RawPower);
         transfer.set(0);
+
+//        transfer.setInverted(true);
     }
 
     public void setTransfer(boolean on) {

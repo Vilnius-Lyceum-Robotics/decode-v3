@@ -45,13 +45,13 @@ public class Shooter extends VLRSubsystem<Shooter> {
         shooterLeft = new MotorEx(hardwareMap, SHOOTER_LEFT, Motor.GoBILDA.BARE);
         shooterRight = new MotorEx(hardwareMap, SHOOTER_RIGHT, Motor.GoBILDA.BARE);
 
-        shooterLeft.setRunMode(Motor.RunMode.VelocityControl);
+        shooterLeft.setRunMode(Motor.RunMode.RawPower);
         shooterLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        shooterRight.setRunMode(Motor.RunMode.VelocityControl);
+        shooterRight.setRunMode(Motor.RunMode.RawPower);
         shooterRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        hood.setPosition(0.1);
         hoodPos = 0.1;
+        hood.setPosition(hoodPos);
         shooterLeft.setInverted(true);
         shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, 0);
         setBlocker(BLOCKER_CLOSED_POS);
@@ -63,14 +63,22 @@ public class Shooter extends VLRSubsystem<Shooter> {
     }
     public void setTargetRPM(double rpm) {
         this.targetRPM = rpm;
+        if(rpm < 0){
+            currentVelocityTarget = 0;
+            previousVelocityTarget = 0;
+            filteredEncoderVelocity = 0;
+            filteredMotorOutput = 0;
+            filtersInitialized = false;
+        }
     }
     public void setShootingInputs(double targetRPM) {
         this.targetRPM = targetRPM;
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,  getCurrentRPM() != 0 ? SHOOTING_RPM_F / getCurrentRPM() : 0);
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, targetRPM != 0 ? SHOOTING_RPM_F / targetRPM : 0);
     }
+
     public void setShootingInputs() {
         this.currentRPM = getCurrentRPM();
-        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,  getCurrentRPM() != 0 ? SHOOTING_RPM_F / getCurrentRPM() : 0);
+        shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, targetRPM != 0 ? SHOOTING_RPM_F / targetRPM : 0);
     }
 
     private double getFilteredVelocity() {
@@ -102,9 +110,8 @@ public class Shooter extends VLRSubsystem<Shooter> {
             previousVelocityTarget = currentVelocityTarget;
 
             currentRPM = getFilteredVelocity();
-
-            shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D,
-                    currentRPM != 0 ? SHOOTING_RPM_F / currentRPM : 0);
+            
+            shootingPID.setPIDF(SHOOTING_RPM_P, SHOOTING_RPM_I, SHOOTING_RPM_D, targetRPM != 0 ? SHOOTING_RPM_F / targetRPM : 0);
 
             double pidfOutput = shootingPID.calculate(currentRPM, currentVelocityTarget);
             double feedforwardAccel = acceleration * ACCELERATION_GAIN;
@@ -150,6 +157,7 @@ public class Shooter extends VLRSubsystem<Shooter> {
         liftAngle = angle;
     }
     public double getHoodPos(){return hoodPos;}
+    public double getHoodPercentage(){return Range.scale(hoodPos, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE, 0, 1);}
     public void stopShooter(){
         isShooterOn = false;
         currentVelocityTarget = 0;

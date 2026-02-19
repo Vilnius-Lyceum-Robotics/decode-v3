@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.helpers.AutoAimCompensa
 
 @Config
 public class AutoAimHeading {
-    public static final Pose blueGoal = new Pose(10, 135);
-    public static final Pose redGoal = new Pose(144-10, 135);
+    public static final Pose blueGoal = new Pose(5, 137);
+    public static final Pose redGoal = new Pose(144-blueGoal.getX(), 135);
 
     public static double getTargetHeading(Follower follower) {
         return getTargetHeading(follower.getPose(), AllianceSaver.getAlliance() == RED ? redGoal : blueGoal);

@@ -73,12 +73,23 @@ public class Chassis extends VLRSubsystem<Chassis> {
         this.targetHeading = targetHeading;
         headingPid.setPID(HEADING_AUTOAIM_P, HEADING_AUTOAIM_I, HEADING_AUTOAIM_D);
     }
+    public double getClosestTargetHeading(double currentHeading){
+        double newHeading1 = targetHeading;
+        newHeading1 += 2 * Math.PI;
+        newHeading1 %= 2 * Math.PI;
+        double newHeading2 = newHeading1 - 2 * Math.PI;
+        if(Math.abs(newHeading1 - currentHeading) < Math.abs(newHeading2 - currentHeading)){
+            return newHeading1;
+        }else{
+            return newHeading2;
+        }
+    }
 
     public void drive(double xSpeed, double ySpeed, double zRotation) {
         // This sometimes fails and causes the whole robot to die
         Vector2d vector = new Vector2d(x_filter.estimatePower(xSpeed) * forwardsMultiplier, y_filter.estimatePower(ySpeed) * strafeMultiplier);
 
-        double heading = autoAimEnabled ? headingPid.calculate(currentHeading, targetHeading) : zRotation * 0.3;
+        double heading = autoAimEnabled ? headingPid.calculate(currentHeading, getClosestTargetHeading(currentHeading)) : zRotation * 0.3;
 
         this.driveMotors(new MecanumDriveController(vector.getX(), vector.getY(), heading));
     }

@@ -11,6 +11,9 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConfiguration;
 import org.firstinspires.ftc.teamcode.subsystems.transfer.commands.SetTransfer;
 
 public class Shoot extends SequentialCommandGroup {
+    private static double getHoodPercentage(){
+        return VLRSubsystem.getShooter().getHoodPercentage();
+    }
     public Shoot() {
         addRequirements(VLRSubsystem.getShooter(), VLRSubsystem.getIntake(), VLRSubsystem.getTransfer());
         addCommands(
@@ -26,14 +29,14 @@ public class Shoot extends SequentialCommandGroup {
                 new WaitCommand(400),
                 new SetIntake(false),
                 // Ball Nr.2
-                new WaitCommand(150),
+                new WaitCommand(150 + (long) (100*getHoodPercentage())),
                 new SetTransfer(true),
                 new SetIntake(true),
                 new WaitCommand(150),
                 new SetTransfer(false),
                 new SetIntake(false),
                 // Ball Nr.3
-                new WaitCommand(500),
+                new WaitCommand(300 + (long) (200*getHoodPercentage())),
                 new SetTransfer(true),
                 new SetIntake(true),
                 new WaitCommand(200),

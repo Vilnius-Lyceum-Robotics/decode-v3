@@ -46,7 +46,7 @@ import java.util.function.BooleanSupplier;
 @TeleOp(name = "Shooter Parameter Mapping", group = "Auto")
 public class ShooterParameterMapping extends VLRLinearOpMode {
     int numberOfPoints = 9;
-    Pose startPose = new Pose(7, 89, Math.toRadians(0));
+    Pose startPose = new Pose(9, 89, Math.toRadians(0));
     Pose goalPose = blueGoal;
     double[][] data = new double[numberOfPoints][3];
     GamepadEx firstDriver;
@@ -79,13 +79,13 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
         samplePoints[0] = AutoAimHeading.getAutoAimPose(67, 67);
 
         samplePoints[1] = AutoAimHeading.getAutoAimPose(48, 120);
-        samplePoints[2] = AutoAimHeading.getAutoAimPose(48, 96);
-        samplePoints[3] = AutoAimHeading.getAutoAimPose(72, 72);
-        samplePoints[4] = AutoAimHeading.getAutoAimPose(96, 96);
+        samplePoints[2] = AutoAimHeading.getAutoAimPose(66, 120);
+        samplePoints[3] = AutoAimHeading.getAutoAimPose(84, 120);
+        samplePoints[4] = AutoAimHeading.getAutoAimPose(102, 120);
         samplePoints[5] = AutoAimHeading.getAutoAimPose(120, 120);
 
         samplePoints[6] = AutoAimHeading.getAutoAimPose(48, 16);
-        samplePoints[7] = AutoAimHeading.getAutoAimPose(72, 24);
+        samplePoints[7] = AutoAimHeading.getAutoAimPose(72, 16);
         samplePoints[8] = AutoAimHeading.getAutoAimPose(84, 16);
     }
 
@@ -161,10 +161,10 @@ public class ShooterParameterMapping extends VLRLinearOpMode {
                 shooter.setHood(shooter.getHoodPos() + 0.05);
             }
             if (gamepad1.dpad_up && !prevStateDpadUp) {
-                shooter.setTargetRPM(shooter.getTargetRPM() + 100);
+                shooter.setTargetRPM(shooter.getTargetRPM() + 50);
             }
             if (gamepad1.dpad_down && !prevStateDpadDown) {
-                shooter.setTargetRPM(shooter.getTargetRPM() - 100);
+                shooter.setTargetRPM(shooter.getTargetRPM() - 50);
             }
             if (gamepad1.right_trigger_pressed && !prevStateRightTrigger) {
                 shooter.setTargetRPM(shooter.getTargetRPM() + 300);
